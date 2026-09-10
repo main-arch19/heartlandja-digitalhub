@@ -58,8 +58,25 @@ export function formatDuration(seconds: number | null | undefined): string {
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
 }
 
+/**
+ * Composes an absolute URL from a site-relative path.
+ *
+ * Throws rather than returning an origin-less path if the site URL is somehow
+ * empty. Every canonical tag, OpenGraph image, JSON-LD `@id` and sitemap entry
+ * flows through here, so silently emitting `/directory/plumbers` with no origin
+ * would poison the whole search-visibility layer while the build stayed green.
+ * `resolveSiteUrl()` already guarantees a non-empty value; this makes a
+ * regression fail loudly instead of quietly.
+ */
 export function absoluteUrl(path = '/'): string {
-  const base = SITE.url.replace(/\/$/, '')
+  const base = SITE.url.replace(/\/+$/, '')
+
+  if (!base) {
+    throw new Error(
+      'SITE.url is empty — absolute URLs cannot be built. Set NEXT_PUBLIC_SITE_URL, or check resolveSiteUrl() in src/lib/constants.ts.',
+    )
+  }
+
   return path.startsWith('http') ? path : `${base}${path.startsWith('/') ? path : `/${path}`}`
 }
 

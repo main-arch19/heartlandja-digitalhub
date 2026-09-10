@@ -6,6 +6,51 @@
  * sitemap entry follows.
  */
 
+/** Returns the first value that is present and not blank. */
+function firstNonEmpty(...values: (string | undefined)[]): string | undefined {
+  for (const value of values) {
+    const trimmed = value?.trim()
+    if (trimmed) return trimmed
+  }
+  return undefined
+}
+
+function withScheme(value: string): string {
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`
+}
+
+/**
+ * Resolves the public origin of the site.
+ *
+ * Order: explicit override, then the Vercel-provided domain, then localhost.
+ *
+ * The empty-string handling is not defensive padding — a hosting platform
+ * injects a declared-but-unset variable as `""`, which `??` does not catch,
+ * because `""` is neither null nor undefined. That is what broke the first
+ * Vercel deployment: `SITE.url` became `""` and `new URL("")` threw during
+ * page-data collection. The quieter half of the same bug is that
+ * `absoluteUrl()` would NOT have thrown — it would have emitted canonical
+ * URLs, OpenGraph tags and sitemap entries with no origin at all.
+ *
+ * `VERCEL_PROJECT_PRODUCTION_URL` and `VERCEL_URL` are bare hostnames with no
+ * protocol, so the scheme is added here. The former is set even on preview
+ * deployments and resolves to the shortest production custom domain, so it
+ * becomes heartlandja.com automatically once that domain is attached — no code
+ * change needed at launch.
+ */
+function resolveSiteUrl(): string {
+  const explicit = firstNonEmpty(process.env.NEXT_PUBLIC_SITE_URL)
+  if (explicit) return withScheme(explicit).replace(/\/+$/, '')
+
+  const vercelHost = firstNonEmpty(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    process.env.VERCEL_URL,
+  )
+  if (vercelHost) return `https://${vercelHost}`.replace(/\/+$/, '')
+
+  return 'http://localhost:3000'
+}
+
 export const SITE = {
   name: 'Heartland JA',
   shortName: 'Heartland',
@@ -15,8 +60,11 @@ export const SITE = {
   parish: 'Clarendon',
   country: 'Jamaica',
   locale: 'en_JM',
-  /** Overridden by NEXT_PUBLIC_SITE_URL in every deployed environment. */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  /**
+   * The public origin, with no trailing slash. Never empty — see
+   * `resolveSiteUrl` for why that guarantee matters.
+   */
+  url: resolveSiteUrl(),
   publisher: 'Heartland JA',
   builtBy: 'Quantum Era Solutions',
   social: {

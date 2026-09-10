@@ -17,10 +17,32 @@ import { createHash, randomUUID } from 'node:crypto'
 export const SESSION_COOKIE = 'hja_sid'
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 2 // 2 days
 
+const DEV_SALT = 'heartland-dev-salt'
+
+let warnedAboutSalt = false
+
+/**
+ * Falls back to a build-stable constant in development so deduplication works
+ * locally without configuration. Production must set ANALYTICS_SALT.
+ *
+ * The `.trim()` matters: a hosting platform injects a declared-but-unset
+ * variable as `""`, which `??` does not catch — production would then hash
+ * every session id with the *development* salt and give no indication. Same
+ * one-character cause as the empty NEXT_PUBLIC_SITE_URL that broke the first
+ * Vercel build, so it is handled the same way and warned about once.
+ */
 function salt(): string {
-  // Falls back to a build-stable constant in development so dedupe still works
-  // locally without configuration. Production must set ANALYTICS_SALT.
-  return process.env.ANALYTICS_SALT ?? 'heartland-dev-salt'
+  const configured = process.env.ANALYTICS_SALT?.trim()
+  if (configured) return configured
+
+  if (process.env.NODE_ENV === 'production' && !warnedAboutSalt) {
+    warnedAboutSalt = true
+    console.warn(
+      '[analytics] ANALYTICS_SALT is not set — falling back to the development salt. Set it to a long random value (openssl rand -hex 32) in production.',
+    )
+  }
+
+  return DEV_SALT
 }
 
 export function newSessionId(): string {

@@ -113,7 +113,7 @@ Every claim below was checked against the running application.
 | Related listings | A Denbigh news post surfaces a Denbigh business |
 | **Listing page weight** | **203KB gzipped, against a 500KB budget** |
 
-### Two bugs found and fixed during the build
+### Three bugs found and fixed
 
 **Session-hash mismatch broke deduplication.** The tracking route generated one
 session id for storage and set a *different* one as the cookie, so no two events
@@ -126,6 +126,30 @@ resolving the session id once per request and reusing it.
 files but no index, so the one URL advertised in `robots.txt` and submitted to
 Search Console did not exist, and none of the split sitemaps were discoverable.
 Replaced with an explicit index route plus per-section routes under `/sitemaps/`.
+
+**An empty `NEXT_PUBLIC_SITE_URL` broke the first Vercel deployment.** The site
+URL was read as `process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'`.
+`??` substitutes only for `null`/`undefined`, but Vercel injects a
+declared-but-unset variable as an empty string — so the fallback never fired and
+`new URL('')` threw during page-data collection. It built locally because the
+variable was genuinely absent there.
+
+The crash was the lucky half. `absoluteUrl()` reads the same value and does
+*not* throw: had `layout.tsx` not used `new URL()`, the build would have gone
+green while emitting canonical tags, OpenGraph URLs, JSON-LD `@id`s and every
+sitemap entry with no origin at all — across a site whose whole business model
+is search visibility.
+
+Fixed with a resolver that treats empty and whitespace-only values as absent and
+falls back through `NEXT_PUBLIC_SITE_URL` → `VERCEL_PROJECT_PRODUCTION_URL` →
+`VERCEL_URL` → localhost, adding the scheme (Vercel's variables are bare
+hostnames) and stripping trailing slashes. `absoluteUrl()` now throws rather
+than returning an origin-less path, so a regression fails loudly.
+
+An audit of every `process.env` read found the same one-character bug class in
+`ANALYTICS_SALT`, where an empty value would have silently hashed production
+session ids with the development salt. Also fixed, and it now warns in
+production when unset.
 
 ## Assumptions — these need the client's confirmation
 
