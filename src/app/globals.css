@@ -1,0 +1,242 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   Heartland JA — design tokens
+
+   Editorial, not startup. A parish publication with authority.
+
+   This is a deliberate single-look design: warm cream paper, deep green ink,
+   gold rules. No dark mode. The colour scheme is declared `light` so the
+   browser does not attempt its own inversion.
+   ========================================================================== */
+
+@theme {
+  /* --- Ground and ink --- */
+  --color-paper: #faf6ee;
+  --color-paper-raised: #fffdf8;
+  --color-paper-sunken: #f2ece0;
+  --color-ink: #14201a;
+  --color-ink-muted: #4a564f;
+  --color-ink-faint: #6d7a73;
+
+  /* --- Brand --- */
+  --color-green: #0f4d34;
+  --color-green-deep: #0a3524;
+  --color-green-light: #1a6b49;
+  --color-green-wash: #e8f0ea;
+  --color-gold: #b8873a;
+  --color-gold-light: #d4a962;
+  --color-gold-wash: #f7efe0;
+
+  /* --- Support --- */
+  --color-rule: #ddd5c5;
+  --color-rule-strong: #c4b9a3;
+  --color-danger: #8f2f22;
+  --color-danger-wash: #f9ece9;
+  --color-success: #1f6b45;
+
+  /* --- Type --- */
+  --font-display: var(--font-fraunces), 'Iowan Old Style', 'Palatino Linotype',
+    'Times New Roman', serif;
+  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    system-ui, sans-serif;
+
+  /* --- Editorial measure --- */
+  --measure: 68ch;
+  --measure-narrow: 54ch;
+}
+
+:root {
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  * {
+    border-color: var(--color-rule);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  /* Visible focus for keyboard users. WCAG 2.1 AA — never removed. */
+  :focus-visible {
+    outline: 2px solid var(--color-green);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-gold-wash);
+    color: var(--color-ink);
+  }
+
+  /* Tabular figures for anything a business owner reads as a number. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ==========================================================================
+   Editorial components
+   ========================================================================== */
+
+@layer components {
+  /* Section eyebrow — small caps label above a headline. */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  /* Hairline gold rule used to separate editorial blocks. */
+  .rule-gold {
+    border: 0;
+    border-top: 1px solid var(--color-gold);
+    opacity: 0.45;
+  }
+
+  /* Standfirst — the intro paragraph under a headline. */
+  .standfirst {
+    font-family: var(--font-display);
+    font-size: 1.1875rem;
+    line-height: 1.5;
+    color: var(--color-ink-muted);
+    font-weight: 400;
+  }
+
+  /* Long-form body copy. Applied to rendered rich text. */
+  .prose-editorial {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  .prose-editorial > * + * {
+    margin-top: 1.25em;
+  }
+
+  .prose-editorial h2 {
+    font-size: 1.5rem;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose-editorial h3 {
+    font-size: 1.25rem;
+    margin-top: 1.75em;
+    margin-bottom: 0.4em;
+  }
+
+  .prose-editorial a {
+    color: var(--color-green);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
+
+  .prose-editorial a:hover {
+    color: var(--color-green-light);
+  }
+
+  .prose-editorial ul,
+  .prose-editorial ol {
+    padding-left: 1.5em;
+  }
+
+  .prose-editorial ul {
+    list-style: disc;
+  }
+
+  .prose-editorial ol {
+    list-style: decimal;
+  }
+
+  .prose-editorial li + li {
+    margin-top: 0.4em;
+  }
+
+  .prose-editorial blockquote {
+    border-left: 2px solid var(--color-gold);
+    padding-left: 1.25em;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    color: var(--color-ink-muted);
+  }
+
+  .prose-editorial strong {
+    font-weight: 650;
+  }
+
+  /* Tap targets. 44px minimum on every interactive element on mobile. */
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@layer utilities {
+  .measure {
+    max-width: var(--measure);
+  }
+
+  .measure-narrow {
+    max-width: var(--measure-narrow);
+  }
+
+  /* Skip link — visible only when focused. */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+  }
+
+  .skip-link:focus {
+    left: 0.5rem;
+    top: 0.5rem;
+  }
+}
