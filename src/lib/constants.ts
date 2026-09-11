@@ -106,6 +106,17 @@ export const CLARENDON_TOWNS = [
 
 export type ClarendonTown = (typeof CLARENDON_TOWNS)[number]
 
+/**
+ * Reference point for parish-wide weather — May Pen, the parish capital.
+ * Clarendon runs from the north hills to the south coast, so conditions vary;
+ * this is the population centre, and the weather card says which town it is for.
+ */
+export const PARISH_CENTRE = {
+  town: 'May Pen',
+  lat: 17.9667,
+  lng: -77.245,
+} as const
+
 /** Historical eras used as a browse axis on /history. */
 export const HISTORY_ERAS = [
   'Taíno & Early Settlement',

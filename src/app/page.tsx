@@ -1,8 +1,11 @@
 import Link from 'next/link'
 
 import { ListingCard } from '@/components/directory/listing-card'
+import { CurrencyCard } from '@/components/widgets/currency-card'
+import { WeatherCard } from '@/components/widgets/weather-card'
 import { getFeaturedBusinesses, getTownsWithCounts } from '@/lib/data/directory'
 import { getLatestNews } from '@/lib/data/news'
+import { getExchangeRate, getWeather } from '@/lib/data/widgets'
 import { NEWS_CATEGORY_LABELS } from '@/lib/constants'
 import { formatDate } from '@/lib/utils'
 
@@ -18,10 +21,16 @@ import { formatDate } from '@/lib/utils'
  */
 
 export default async function HomePage() {
-  const [news, featured, towns] = await Promise.all([
+  // Widget fetches join the same Promise.all so the two external calls run in
+  // parallel with everything else and add no serial latency. Both resolve to
+  // null on failure rather than throwing, so an outage degrades one card
+  // instead of breaking the homepage.
+  const [news, featured, towns, exchangeRate, weather] = await Promise.all([
     getLatestNews(5),
     getFeaturedBusinesses(3),
     getTownsWithCounts(),
+    getExchangeRate(),
+    getWeather(),
   ])
 
   const [lead, ...rest] = news
@@ -147,6 +156,11 @@ export default async function HomePage() {
               Browse the full directory
             </Link>
           </section>
+
+          {/* Utility widgets. These are the two things a Clarendon reader looks
+              up constantly — answering them here keeps the visit on the site. */}
+          <CurrencyCard data={exchangeRate} />
+          <WeatherCard data={weather} />
         </aside>
       </div>
 
