@@ -52,7 +52,7 @@ export default async function AdminDashboard() {
           <h2 className="eyebrow">Awaiting approval</h2>
           <Link
             href="/admin/directory"
-            className="text-xs font-medium text-green underline underline-offset-2"
+            className="link-target text-xs font-medium text-green underline underline-offset-2"
           >
             All listings
           </Link>

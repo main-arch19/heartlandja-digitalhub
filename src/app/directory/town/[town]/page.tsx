@@ -147,7 +147,7 @@ export default async function TownPage({ params }: PageProps) {
           )}
         </header>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
           <section>
             <h2 className="eyebrow">
               {businesses.length} {businesses.length === 1 ? 'listing' : 'listings'}
@@ -159,7 +159,7 @@ export default async function TownPage({ params }: PageProps) {
                 <p className="text-ink-muted">Nothing listed in {town} yet.</p>
                 <Link
                   href="/advertise"
-                  className="mt-2 inline-block text-sm text-green underline underline-offset-2 hover:text-green-light"
+                  className="link-target mt-1 text-sm text-green underline underline-offset-2 hover:text-green-light"
                 >
                   Be the first business listed here
                 </Link>

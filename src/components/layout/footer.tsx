@@ -84,12 +84,14 @@ export function Footer() {
           {FOOTER_SECTIONS.map((section) => (
             <div key={section.heading}>
               <h2 className="eyebrow">{section.heading}</h2>
-              <ul className="mt-3 space-y-2">
+              {/* Tight leading on desktop, finger-sized rows on mobile: the
+                  footer is where people go for contact details on a phone. */}
+              <ul className="mt-1 sm:mt-3">
                 {section.links.map((link) => (
                   <li key={`${section.heading}-${link.href}-${link.label}`}>
                     <Link
                       href={link.href}
-                      className="text-sm text-ink-muted transition-colors hover:text-green"
+                      className="link-target text-sm text-ink-muted transition-colors hover:text-green sm:min-h-0 sm:py-1"
                     >
                       {link.label}
                     </Link>

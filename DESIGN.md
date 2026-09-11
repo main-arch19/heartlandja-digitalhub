@@ -28,11 +28,11 @@ surface for contrast bugs while adding weight to a page budgeted at 500KB.
 | Token | Value | Use |
 |---|---|---|
 | `--color-paper` | `#FAF6EE` | Page ground. Warm cream, never white. |
-| `--color-paper-raised` | `#FFFDF8` | Cards, form fields sitting above the ground. |
+| `--color-paper-raised` | `#FFFFFF` | **Reading surfaces** — cards, listings, form fields. Pure white. |
 | `--color-paper-sunken` | `#F2ECE0` | Footer, quiet panels, admin chrome. |
 | `--color-ink` | `#14201A` | Body text. Near-black with a green cast. |
 | `--color-ink-muted` | `#4A564F` | Secondary text, standfirsts. |
-| `--color-ink-faint` | `#6D7A73` | Metadata, captions, counts. |
+| `--color-ink-faint` | `#5C6961` | Metadata, captions, counts. |
 | `--color-green` | `#0F4D34` | Primary. Links, buttons, masthead. |
 | `--color-green-deep` | `#0A3524` | Hover on primary. |
 | `--color-gold` | `#B8873A` | Rules, eyebrows, section marks. Accent only. |
@@ -47,7 +47,7 @@ at 4.5:1 against cream it does not pass for small text.
 
 - Body text on paper: ≥ 7:1. `--color-ink` on `--color-paper` clears this.
 - Secondary text: ≥ 4.5:1. `--color-ink-muted` clears this.
-- `--color-ink-faint` is for non-essential metadata only, at 14px or larger.
+- `--color-ink-faint` clears 4.5:1 on all three grounds (white 5.76, cream 5.34, sunken 4.89). The sunken panels are the binding constraint — check against those, not white.
 - Interactive text on paper: ≥ 4.5:1. `--color-green` clears this.
 - Never place `--color-gold` on `--color-paper` below 18px.
 
@@ -92,13 +92,27 @@ Photography-forward: where an image exists it leads, and the chrome recedes.
 ## Layout
 
 - Content max-width: `72rem` (`max-w-6xl`), `1rem` mobile / `1.5rem` desktop gutters.
+- **Every `grid` that gains columns at `lg:` must also declare
+  `grid-cols-[minmax(0,1fr)]` at the base breakpoint.** A grid item defaults to
+  `min-width: auto`, which refuses to shrink below its content's intrinsic
+  width — on a 320px phone that pushed the document to 344px and broke the page
+  horizontally. `minmax(0,1fr)` at `lg:` alone does not protect mobile.
+- Verified: no horizontal overflow at 320, 360, 390 or 430px on any page.
 - Article pages: single measure column with a `18–20rem` sidebar on `lg` and above.
 - Sidebar separates with a left rule on desktop, stacks below content on mobile.
 - Vertical rhythm is generous. Cramped editorial reads as cheap.
 
 ## Interaction
 
-- **Tap targets: 44×44px minimum.** Every interactive element uses `.tap-target`.
+- **Tap targets: 44×44px minimum.** Three utilities cover this:
+  - `.tap-target` — buttons and primary actions, 44px.
+  - `.link-target` — a standalone text link on its own line. Extends the hit
+    area vertically without changing how the link looks. Inline links inside
+    prose deliberately do NOT use it: padding there breaks the line rhythm of
+    body copy, and those links are read rather than aimed at.
+  - `.chip-target` — 40px, for chips in a dense wrapping grid (town filters).
+    44px there reads as a button stack rather than a filter row; 40px clears
+    the practical mis-hit threshold while keeping editorial density.
   Non-negotiable — this is a phone-first audience, often one-handed.
 - Focus is always visible: 2px green outline, 2px offset. Never removed.
 - Transitions are colour-only and under 200ms. No layout animation.

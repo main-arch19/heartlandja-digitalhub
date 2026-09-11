@@ -51,14 +51,14 @@ export default async function HomePage() {
 
       <hr className="rule-gold my-10" />
 
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
         {/* --- News --- */}
         <div>
           <div className="flex items-baseline justify-between gap-4">
             <h2 className="eyebrow">Latest from the parish</h2>
             <Link
               href="/news"
-              className="text-xs font-medium text-green underline underline-offset-2 hover:text-green-light"
+              className="link-target text-xs font-medium text-green underline underline-offset-2 hover:text-green-light"
             >
               All news
             </Link>
@@ -126,7 +126,7 @@ export default async function HomePage() {
               </p>
               <Link
                 href="/magazine"
-                className="mt-3 inline-block text-sm font-medium text-green underline underline-offset-2 hover:text-green-light"
+                className="link-target mt-1 text-sm font-medium text-green underline underline-offset-2 hover:text-green-light"
               >
                 Read the archive
               </Link>
@@ -142,7 +142,7 @@ export default async function HomePage() {
                 <li key={town.slug}>
                   <Link
                     href={`/directory/town/${town.slug}`}
-                    className="inline-flex items-center rounded-sm border border-rule bg-paper-raised px-2.5 py-1.5 text-xs text-ink-muted transition-colors hover:border-green hover:text-green"
+                    className="chip-target rounded-sm border border-rule bg-paper-raised px-3 text-xs text-ink-muted transition-colors hover:border-green hover:text-green"
                   >
                     {town.town}
                   </Link>
@@ -151,7 +151,7 @@ export default async function HomePage() {
             </ul>
             <Link
               href="/directory"
-              className="mt-4 inline-block text-sm font-medium text-green underline underline-offset-2 hover:text-green-light"
+              className="link-target mt-1 text-sm font-medium text-green underline underline-offset-2 hover:text-green-light"
             >
               Browse the full directory
             </Link>
@@ -171,7 +171,7 @@ export default async function HomePage() {
             <h2 className="eyebrow">Featured businesses</h2>
             <Link
               href="/advertise"
-              className="text-xs font-medium text-green underline underline-offset-2 hover:text-green-light"
+              className="link-target text-xs font-medium text-green underline underline-offset-2 hover:text-green-light"
             >
               List your business
             </Link>

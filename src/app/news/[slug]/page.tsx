@@ -74,7 +74,7 @@ export default async function NewsPostPage({ params }: PageProps) {
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
         <Breadcrumbs items={crumbs} />
 
-        <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
           <article>
             <p className="eyebrow">{NEWS_CATEGORY_LABELS[post.category]}</p>
 

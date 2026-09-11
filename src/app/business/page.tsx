@@ -180,7 +180,7 @@ function NoListing() {
       </p>
       <Link
         href="/advertise"
-        className="mt-5 inline-block text-sm font-medium text-green underline underline-offset-2 hover:text-green-light"
+        className="link-target mt-2 text-sm font-medium text-green underline underline-offset-2 hover:text-green-light"
       >
         List your business
       </Link>

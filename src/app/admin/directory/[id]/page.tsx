@@ -43,7 +43,7 @@ export default async function AdminListingPage({ params }: PageProps) {
         {business.category.name} · {business.town}, {business.parish}
       </p>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
+      <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]">
         <div>
           <h2 className="eyebrow">Listing settings</h2>
           <hr className="rule-gold mt-2 mb-5" />

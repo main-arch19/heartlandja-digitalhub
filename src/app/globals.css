@@ -11,13 +11,20 @@
    ========================================================================== */
 
 @theme {
-  /* --- Ground and ink --- */
+  /* --- Ground and ink ---
+     Reading surfaces are pure white; the page ground stays warm cream. Content
+     lifts off the page and reads crisp, while the publication keeps the paper
+     character that stops it looking like a SaaS product. */
   --color-paper: #faf6ee;
-  --color-paper-raised: #fffdf8;
+  --color-paper-raised: #ffffff;
   --color-paper-sunken: #f2ece0;
   --color-ink: #14201a;
   --color-ink-muted: #4a564f;
-  --color-ink-faint: #6d7a73;
+  /* Darkened from #6d7a73, which measured 4.49:1 on white — under the 4.5:1 AA
+     threshold. Chosen to clear 4.5:1 on ALL THREE grounds, not just white:
+     white 5.76, cream 5.34, sunken 4.89. The sunken panels are the binding
+     constraint, and they carry the widget metadata. */
+  --color-ink-faint: #5c6961;
 
   /* --- Brand --- */
   --color-green: #0f4d34;
@@ -215,6 +222,33 @@
   .tap-target {
     min-height: 44px;
     min-width: 44px;
+  }
+
+  /*
+   * A standalone text link — a call to action on its own line, not a link
+   * inside flowing prose. Text that small is a 16–20px tap target otherwise,
+   * well under the 44px minimum, so the hit area is extended vertically
+   * without changing how the link looks.
+   *
+   * Inline links inside paragraphs deliberately do NOT use this: padding there
+   * would break the line rhythm of the body copy, and they are read rather
+   * than aimed at.
+   */
+  .link-target {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /*
+   * Chips in a wrapping grid — town filters, category pills. These sit close
+   * to one another, so an undersized target is not just hard to hit, it is
+   * easy to mis-hit.
+   */
+  .chip-target {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
   }
 }
 
