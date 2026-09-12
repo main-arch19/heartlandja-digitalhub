@@ -77,7 +77,7 @@ export default async function AdminDashboard() {
                 </div>
                 <Link
                   href={`/admin/directory/${business.id}`}
-                  className="tap-target inline-flex items-center rounded-sm border border-green px-4 text-sm font-medium text-green transition-colors hover:bg-green hover:text-paper"
+                  className="pressable tap-target inline-flex items-center rounded-sm border border-green px-4 text-sm font-medium text-green transition-colors hover:bg-green hover:text-paper"
                 >
                   Review
                 </Link>

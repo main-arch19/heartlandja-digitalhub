@@ -23,7 +23,7 @@ export function ShareRow({ path, title }: { path: string; title: string }) {
   const email = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${title}\n\n${url}\n\nvia ${SITE.name}`)}`
 
   const linkClass =
-    'tap-target inline-flex items-center gap-1.5 rounded-sm border border-rule px-3 text-xs font-medium text-ink-muted transition-colors hover:border-green hover:text-green'
+    'pressable tap-target inline-flex items-center gap-1.5 rounded-sm border border-rule px-3 text-xs font-medium text-ink-muted transition-colors hover:border-green hover:text-green'
 
   return (
     <div>

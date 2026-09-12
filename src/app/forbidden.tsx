@@ -30,13 +30,13 @@ export default function Forbidden() {
       <div className="mt-7 flex flex-wrap gap-3">
         <Link
           href="/"
-          className="tap-target inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
+          className="pressable tap-target inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
         >
           Back to the front page
         </Link>
         <Link
           href="/business"
-          className="tap-target inline-flex items-center rounded-sm border border-rule-strong px-5 text-sm font-medium text-ink transition-colors hover:border-green hover:text-green"
+          className="pressable tap-target inline-flex items-center rounded-sm border border-rule-strong px-5 text-sm font-medium text-ink transition-colors hover:border-green hover:text-green"
         >
           Your listing
         </Link>

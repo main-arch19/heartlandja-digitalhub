@@ -250,9 +250,40 @@
     align-items: center;
     min-height: 40px;
   }
+
 }
 
 @layer utilities {
+  /*
+   * Press feedback.
+   *
+   * The one piece of motion this design admits, and it earns its place: on a
+   * phone there is no hover, so a press state is the ONLY confirmation the
+   * interface registered the tap. Without it a slow connection is
+   * indistinguishable from a dead button, and people tap twice.
+   *
+   * 120ms and a 0.98 scale — inside the 100–160ms band for press feedback, and
+   * small enough to read as response rather than decoration. `transform` only,
+   * so it runs on the compositor and never triggers layout. The global
+   * prefers-reduced-motion block already neutralises it for anyone who asks.
+   *
+   * MUST live in the utilities layer, not components: nearly every button also
+   * carries Tailwind's `transition-colors`, which is itself a utility. From the
+   * components layer this rule loses the cascade and `transition-property`
+   * resolves to colours only — the scale would snap instead of easing. The
+   * shorthand below is deliberately `transform` plus the colour properties so
+   * both animate together rather than one overriding the other.
+   */
+  .pressable {
+    transition-property: transform, color, background-color, border-color;
+    transition-duration: 120ms;
+    transition-timing-function: ease-out;
+  }
+
+  .pressable:active {
+    transform: scale(0.98);
+  }
+
   .measure {
     max-width: var(--measure);
   }

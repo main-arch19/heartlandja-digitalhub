@@ -85,7 +85,7 @@ export function ContactButton({
       external={external}
       aria-label={sublabel ? `${label}: ${sublabel}` : label}
       className={cn(
-        'tap-target flex items-center gap-3 rounded-sm border px-4 py-3 text-left transition-colors',
+        'pressable tap-target flex items-center gap-3 rounded-sm border px-4 py-3 text-left transition-colors',
         styles,
       )}
     >

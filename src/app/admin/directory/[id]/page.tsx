@@ -92,7 +92,7 @@ export default async function AdminListingPage({ params }: PageProps) {
           {business.status === 'active' ? (
             <Link
               href={`/directory/${business.category.slug}/${business.slug}`}
-              className="tap-target mt-8 inline-flex items-center rounded-sm border border-rule-strong px-4 text-sm text-ink transition-colors hover:border-green hover:text-green"
+              className="pressable tap-target mt-8 inline-flex items-center rounded-sm border border-rule-strong px-4 text-sm text-ink transition-colors hover:border-green hover:text-green"
             >
               View public listing
             </Link>

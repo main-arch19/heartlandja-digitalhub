@@ -229,7 +229,7 @@ export default async function ListingPage({ params }: PageProps) {
               </p>
               <Link
                 href="/advertise"
-                className="tap-target mt-3 inline-flex items-center text-sm font-medium text-green underline underline-offset-2 hover:text-green-light"
+                className="pressable tap-target mt-3 inline-flex items-center text-sm font-medium text-green underline underline-offset-2 hover:text-green-light"
               >
                 Claim this listing
               </Link>

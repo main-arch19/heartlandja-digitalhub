@@ -32,7 +32,7 @@ export default function LoginPage() {
           {devAuthAllowed() ? (
             <Link
               href="/dev/login"
-              className="tap-target mt-5 inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
+              className="pressable tap-target mt-5 inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
             >
               Open the development role switcher
             </Link>

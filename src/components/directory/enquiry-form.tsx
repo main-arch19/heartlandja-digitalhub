@@ -20,7 +20,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="tap-target inline-flex items-center rounded-sm bg-green px-6 text-sm font-medium text-paper transition-colors hover:bg-green-deep disabled:opacity-60"
+      className="pressable tap-target inline-flex items-center rounded-sm bg-green px-6 text-sm font-medium text-paper transition-colors hover:bg-green-deep disabled:opacity-60"
     >
       {pending ? 'Sending…' : 'Send enquiry'}
     </button>

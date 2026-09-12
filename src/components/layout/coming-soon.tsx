@@ -36,13 +36,13 @@ export function ComingSoon({
       <div className="mt-6 flex flex-wrap gap-3">
         <Link
           href="/directory"
-          className="tap-target inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
+          className="pressable tap-target inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
         >
           Browse the directory
         </Link>
         <Link
           href="/"
-          className="tap-target inline-flex items-center rounded-sm border border-rule-strong px-5 text-sm font-medium text-ink transition-colors hover:border-green hover:text-green"
+          className="pressable tap-target inline-flex items-center rounded-sm border border-rule-strong px-5 text-sm font-medium text-ink transition-colors hover:border-green hover:text-green"
         >
           Back to the front page
         </Link>

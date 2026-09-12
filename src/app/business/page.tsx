@@ -99,19 +99,19 @@ export default async function BusinessDashboard({ searchParams }: PageProps) {
       <section className="mt-10 flex flex-wrap gap-3">
         <Link
           href="/business/listing"
-          className="tap-target inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
+          className="pressable tap-target inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
         >
           Edit your listing
         </Link>
         <a
           href={`/business/report.csv?days=${days}`}
-          className="tap-target inline-flex items-center rounded-sm border border-rule-strong px-5 text-sm font-medium text-ink transition-colors hover:border-green hover:text-green"
+          className="pressable tap-target inline-flex items-center rounded-sm border border-rule-strong px-5 text-sm font-medium text-ink transition-colors hover:border-green hover:text-green"
         >
           Download {days}-day report (CSV)
         </a>
         <Link
           href={`/directory/${business.category.slug}/${business.slug}`}
-          className="tap-target inline-flex items-center rounded-sm border border-rule-strong px-5 text-sm font-medium text-ink transition-colors hover:border-green hover:text-green"
+          className="pressable tap-target inline-flex items-center rounded-sm border border-rule-strong px-5 text-sm font-medium text-ink transition-colors hover:border-green hover:text-green"
         >
           View public listing
         </Link>

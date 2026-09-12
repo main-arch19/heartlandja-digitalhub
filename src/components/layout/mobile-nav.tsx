@@ -41,7 +41,7 @@ export function MobileNav({ links }: MobileNavProps) {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
-        className="tap-target inline-flex items-center justify-center rounded-sm text-ink-muted transition-colors hover:text-green"
+        className="pressable tap-target inline-flex items-center justify-center rounded-sm text-ink-muted transition-colors hover:text-green"
       >
         <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
         {open ? <CloseIcon /> : <MenuIcon />}
@@ -59,7 +59,7 @@ export function MobileNav({ links }: MobileNavProps) {
                 <Link
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="tap-target flex items-center text-[0.9375rem] font-medium text-ink transition-colors hover:text-green"
+                  className="pressable tap-target flex items-center text-[0.9375rem] font-medium text-ink transition-colors hover:text-green"
                 >
                   {link.label}
                 </Link>
@@ -69,7 +69,7 @@ export function MobileNav({ links }: MobileNavProps) {
               <Link
                 href="/advertise"
                 onClick={() => setOpen(false)}
-                className="tap-target inline-flex w-full items-center justify-center rounded-sm bg-green px-4 text-sm font-medium text-paper"
+                className="pressable tap-target inline-flex w-full items-center justify-center rounded-sm bg-green px-4 text-sm font-medium text-paper"
               >
                 Advertise with us
               </Link>

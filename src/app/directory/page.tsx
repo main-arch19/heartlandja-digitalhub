@@ -146,7 +146,7 @@ export default async function DirectoryPage({ searchParams }: PageProps) {
               <li key={town.slug}>
                 <Link
                   href={`/directory/town/${town.slug}`}
-                  className="tap-target inline-flex items-center rounded-sm border border-rule bg-paper-raised px-3.5 text-sm text-ink-muted transition-colors hover:border-green hover:text-green"
+                  className="pressable tap-target inline-flex items-center rounded-sm border border-rule bg-paper-raised px-3.5 text-sm text-ink-muted transition-colors hover:border-green hover:text-green"
                 >
                   {town.town}
                   <span className="ml-2 text-xs text-ink-faint tnum">{town.count}</span>
@@ -169,7 +169,7 @@ export default async function DirectoryPage({ searchParams }: PageProps) {
           </p>
           <Link
             href="/advertise"
-            className="tap-target mt-4 inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
+            className="pressable tap-target mt-4 inline-flex items-center rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
           >
             See listing options
           </Link>

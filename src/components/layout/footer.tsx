@@ -65,7 +65,7 @@ export function Footer() {
                 target="_blank"
                 rel="me noopener noreferrer"
                 aria-label="Heartland JA on Instagram"
-                className="tap-target inline-flex items-center justify-center rounded-sm border border-rule-strong text-ink-muted transition-colors hover:border-green hover:text-green"
+                className="pressable tap-target inline-flex items-center justify-center rounded-sm border border-rule-strong text-ink-muted transition-colors hover:border-green hover:text-green"
               >
                 <InstagramIcon />
               </a>
@@ -74,7 +74,7 @@ export function Footer() {
                 target="_blank"
                 rel="me noopener noreferrer"
                 aria-label="Heartland JA on Facebook"
-                className="tap-target inline-flex items-center justify-center rounded-sm border border-rule-strong text-ink-muted transition-colors hover:border-green hover:text-green"
+                className="pressable tap-target inline-flex items-center justify-center rounded-sm border border-rule-strong text-ink-muted transition-colors hover:border-green hover:text-green"
               >
                 <FacebookIcon />
               </a>

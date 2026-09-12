@@ -27,7 +27,7 @@ export function DirectorySearch({ defaultValue = '' }: { defaultValue?: string }
       />
       <button
         type="submit"
-        className="tap-target shrink-0 rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
+        className="pressable tap-target shrink-0 rounded-sm bg-green px-5 text-sm font-medium text-paper transition-colors hover:bg-green-deep"
       >
         Search
       </button>

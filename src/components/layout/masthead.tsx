@@ -36,14 +36,14 @@ export function Masthead() {
           <div className="flex items-center gap-2">
             <Link
               href="/advertise"
-              className="tap-target hidden items-center rounded-sm border border-green px-4 text-sm font-medium text-green transition-colors hover:bg-green hover:text-paper sm:inline-flex"
+              className="pressable tap-target hidden items-center rounded-sm border border-green px-4 text-sm font-medium text-green transition-colors hover:bg-green hover:text-paper sm:inline-flex"
             >
               Advertise
             </Link>
             <Link
               href="/search"
               aria-label="Search the site"
-              className="tap-target inline-flex items-center justify-center rounded-sm text-ink-muted transition-colors hover:text-green"
+              className="pressable tap-target inline-flex items-center justify-center rounded-sm text-ink-muted transition-colors hover:text-green"
             >
               <SearchIcon />
             </Link>

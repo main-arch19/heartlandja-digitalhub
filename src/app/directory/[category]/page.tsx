@@ -145,7 +145,7 @@ export default async function CategoryPage({ params }: PageProps) {
                 <li key={child.id}>
                   <Link
                     href={`/directory/${child.slug}`}
-                    className="tap-target inline-flex items-center rounded-sm border border-rule bg-paper-raised px-3 text-sm text-ink-muted transition-colors hover:border-green hover:text-green"
+                    className="pressable tap-target inline-flex items-center rounded-sm border border-rule bg-paper-raised px-3 text-sm text-ink-muted transition-colors hover:border-green hover:text-green"
                   >
                     {child.name}
                     <span className="ml-1.5 text-xs text-ink-faint tnum">
