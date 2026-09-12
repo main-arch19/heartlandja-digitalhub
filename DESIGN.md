@@ -15,41 +15,65 @@ Heartland JA has its own identity, distinct from Quantum Era Solutions. Nothing
 from the QES palette appears here.
 
 The visual reference points are parish newspapers, regional quarterlies and
-gazetteers — warm paper stock, deep ink, restrained gold rules. Not a tech
+gazetteers — deep ink, restrained gold rules, generous measure. Not a tech
 product, not a template.
+
+The paper character now lives in the masthead band and in the typography rather
+than in the page ground, which is white. The serif headlines, the gold eyebrows
+and the rules carry the editorial identity; tinting every page behind the text
+was not what was carrying it.
 
 ## Colour
 
-A deliberate single-look design. **No dark mode.** An editorial publication on
-cream paper is a considered choice, and shipping two themes would double the
-surface for contrast bugs while adding weight to a page budgeted at 500KB.
-`color-scheme: light` is declared so browsers do not attempt their own inversion.
+A deliberate single-look design. **No dark mode.** Shipping two themes would
+double the surface for contrast bugs while adding weight to a page budgeted at
+500KB. `color-scheme: light` is declared so browsers do not attempt their own
+inversion.
+
+**The page is white.** The warm cream survives in exactly one place — the
+masthead band — where it carries the publication's character without tinting
+every page behind the text.
 
 | Token | Value | Use |
 |---|---|---|
-| `--color-paper` | `#FAF6EE` | Page ground. Warm cream, never white. |
-| `--color-paper-raised` | `#FFFFFF` | **Reading surfaces** — cards, listings, form fields. Pure white. |
-| `--color-paper-sunken` | `#F2ECE0` | Footer, quiet panels, admin chrome. |
+| `--color-paper` | `#FFFFFF` | Page ground. Also the label on green buttons (`text-paper`). |
+| `--color-masthead` | `#FAF6EE` | **Masthead band only.** Never below the primary nav. |
+| `--color-paper-raised` | `#FFFFFF` | Reading surfaces — cards, listings, form fields. |
+| `--color-paper-sunken` | `#F4F6F5` | Footer, quiet panels, admin chrome. Neutral grey. |
 | `--color-ink` | `#14201A` | Body text. Near-black with a green cast. |
 | `--color-ink-muted` | `#4A564F` | Secondary text, standfirsts. |
 | `--color-ink-faint` | `#5C6961` | Metadata, captions, counts. |
 | `--color-green` | `#0F4D34` | Primary. Links, buttons, masthead. |
 | `--color-green-deep` | `#0A3524` | Hover on primary. |
-| `--color-gold` | `#B8873A` | Rules, eyebrows, section marks. Accent only. |
-| `--color-rule` | `#DDD5C5` | Hairline borders. |
+| `--color-gold` | `#B8873A` | Brand gold: wordmark, `.rule-gold`, decorative marks. |
+| `--color-gold-text` | `#9C6B26` | **Gold as text** — `.eyebrow` only. Passes AA at 4.62:1. |
+| `--color-rule` | `#E3E6E4` | Hairline borders. Neutral grey. |
+| `--color-rule-strong` | `#C8CDCA` | Inputs, table heads. |
 | `--color-danger` | `#8F2F22` | Errors, expiry warnings. |
 
+**`paper` means white, not cream.** The name was kept rather than renamed
+because the token is also a *foreground* — `text-paper` is the label on green
+buttons in 22 places — and renaming would churn those call sites for cosmetic
+reasons.
+
 **Gold is an accent, never a surface.** It appears as hairline rules, eyebrow
-labels and section marks. Gold is never a button background and never body text —
-at 4.5:1 against cream it does not pass for small text.
+labels and section marks, never as a button background or body text.
+
+**Keep the two golds separate.** `--color-gold` (`#B8873A`) measures 3.20:1 on
+white, which is below AA for the 11px eyebrow label used above nearly every
+headline. `--color-gold-text` (`#9C6B26`) clears it at 4.62:1. Re-unifying them
+would silently push 56 eyebrow labels back under AA.
 
 ### Contrast requirements (WCAG 2.1 AA)
 
-- Body text on paper: ≥ 7:1. `--color-ink` on `--color-paper` clears this.
-- Secondary text: ≥ 4.5:1. `--color-ink-muted` clears this.
-- `--color-ink-faint` clears 4.5:1 on all three grounds (white 5.76, cream 5.34, sunken 4.89). The sunken panels are the binding constraint — check against those, not white.
-- Interactive text on paper: ≥ 4.5:1. `--color-green` clears this.
-- Never place `--color-gold` on `--color-paper` below 18px.
+Grounds to check against: **white** (the page), **`#F4F6F5`** (panels), and
+**`#FAF6EE`** (the masthead band).
+
+- Body text: ≥ 7:1. `--color-ink` on white clears this at 16.78.
+- Secondary text: ≥ 4.5:1. `--color-ink-muted` clears this at 7.68 on white, 7.07 on panels.
+- `--color-ink-faint` clears 4.5:1 on all three grounds (white 5.76, panels 5.30, masthead 5.34). **The panels are the binding constraint** — check against those, not white.
+- Interactive text: ≥ 4.5:1. `--color-green` clears this at 9.85 on white.
+- Never place `--color-gold` on any ground below 18px — use `--color-gold-text`.
 
 ## Type
 

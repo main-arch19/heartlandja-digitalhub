@@ -107,7 +107,7 @@ export default async function DevLoginPage() {
                   id="dev-business"
                   name="businessId"
                   defaultValue={businesses[0]?.id}
-                  className="tap-target mt-1.5 w-full rounded-sm border border-rule-strong bg-paper px-2 text-sm"
+                  className="tap-target mt-1.5 w-full rounded-sm border border-rule-strong bg-paper-raised px-2 text-sm"
                 >
                   {businesses.map((business) => (
                     <option key={business.id} value={business.id}>

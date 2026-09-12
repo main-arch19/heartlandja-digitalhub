@@ -5,24 +5,36 @@
 
    Editorial, not startup. A parish publication with authority.
 
-   This is a deliberate single-look design: warm cream paper, deep green ink,
-   gold rules. No dark mode. The colour scheme is declared `light` so the
-   browser does not attempt its own inversion.
+   This is a deliberate single-look design: a white page, deep green ink, gold
+   accents. No dark mode. The colour scheme is declared `light` so the browser
+   does not attempt its own inversion.
+
+   The warm cream survives in exactly one place — the masthead band — where it
+   carries the publication's character without tinting every page behind the
+   text. Everything below the nav is white.
    ========================================================================== */
 
 @theme {
   /* --- Ground and ink ---
-     Reading surfaces are pure white; the page ground stays warm cream. Content
-     lifts off the page and reads crisp, while the publication keeps the paper
-     character that stops it looking like a SaaS product. */
-  --color-paper: #faf6ee;
+     The page is white. Panels sit on a neutral near-white grey so a widget or
+     an empty state still reads as a distinct block rather than floating text.
+
+     NOTE ON THE NAME: `paper` means WHITE, not cream. The token also serves as
+     a FOREGROUND — `text-paper` is the label on green buttons in 22 places, and
+     white-on-green measures 9.85:1. It was not renamed because renaming it
+     would churn those call sites for cosmetic reasons. The cream band has its
+     own token below. */
+  --color-paper: #ffffff;
   --color-paper-raised: #ffffff;
-  --color-paper-sunken: #f2ece0;
+  --color-paper-sunken: #f4f6f5;
+  /* The masthead band only. Kept warm so the header matches the approved
+     design; deliberately NOT used anywhere below the primary nav. */
+  --color-masthead: #faf6ee;
   --color-ink: #14201a;
   --color-ink-muted: #4a564f;
   /* Darkened from #6d7a73, which measured 4.49:1 on white — under the 4.5:1 AA
-     threshold. Chosen to clear 4.5:1 on ALL THREE grounds, not just white:
-     white 5.76, cream 5.34, sunken 4.89. The sunken panels are the binding
+     threshold. Chosen to clear 4.5:1 on every ground it lands on: white 5.76,
+     grey panels 5.30, masthead cream 5.34. The panels are the binding
      constraint, and they carry the widget metadata. */
   --color-ink-faint: #5c6961;
 
@@ -34,10 +46,21 @@
   --color-gold: #b8873a;
   --color-gold-light: #d4a962;
   --color-gold-wash: #f7efe0;
+  /* Gold as TEXT only. The brand gold measures 3.20:1 on white — below the
+     4.5:1 AA threshold for the 11px eyebrow label that appears above nearly
+     every headline. This darker gold clears it at 4.62:1.
 
-  /* --- Support --- */
-  --color-rule: #ddd5c5;
-  --color-rule-strong: #c4b9a3;
+     Keep the two separate. `--color-gold` is the brand: the wordmark, the gold
+     rules, decorative marks, none of which are small text. Re-unifying them
+     would silently push 56 eyebrow labels back under AA. */
+  --color-gold-text: #9c6b26;
+
+  /* --- Support ---
+     Neutral greys, not the tan hairlines this design started with. Against a
+     white page a warm rule is the single most visible remaining beige element,
+     and it appears on every card, table and divider. */
+  --color-rule: #e3e6e4;
+  --color-rule-strong: #c8cdca;
   --color-danger: #8f2f22;
   --color-danger-wash: #f9ece9;
   --color-success: #1f6b45;
@@ -136,7 +159,9 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-gold);
+    /* The darker gold, not the brand gold — this is 11px text and has to clear
+       AA. See the token definition. */
+    color: var(--color-gold-text);
   }
 
   /* Hairline gold rule used to separate editorial blocks. */

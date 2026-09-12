@@ -20,8 +20,10 @@ export const NAV_LINKS = [
 ] as const
 
 export function Masthead() {
+  // The cream band uses `bg-masthead`, not `bg-paper` — the page ground below
+  // the nav is white, and this header is the one place the warm tone is kept.
   return (
-    <header className="border-b border-rule bg-paper">
+    <header className="border-b border-rule bg-masthead">
       {/* Top bar — wordmark and utility links */}
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex items-center justify-between gap-4 py-4 sm:py-5">
