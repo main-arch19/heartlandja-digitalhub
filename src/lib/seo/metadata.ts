@@ -103,6 +103,22 @@ export function townMetaDefaults(town: string, count: number) {
   }
 }
 
+export function topicMetaDefaults(
+  topicName: string,
+  count: number,
+  description?: string | null,
+) {
+  const plural = count === 1 ? 'story' : 'stories'
+  return {
+    title: `${topicName} — Clarendon news`,
+    description:
+      description?.trim() ||
+      (count > 0
+        ? `${count} ${plural} on ${topicName.toLowerCase()} from across Clarendon parish, reported by Heartland JA.`
+        : `${topicName} in Clarendon, Jamaica. News and reporting from across the parish by Heartland JA.`),
+  }
+}
+
 export function listingMetaDefaults(business: {
   name: string
   town: string

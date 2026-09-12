@@ -6,6 +6,7 @@ import {
   getTownsWithCounts,
 } from '@/lib/data/directory'
 import { getLatestNews, getSections } from '@/lib/data/news'
+import { getTopicsWithCounts } from '@/lib/data/topics'
 import { absoluteUrl } from '@/lib/utils'
 
 /**
@@ -22,7 +23,13 @@ import { absoluteUrl } from '@/lib/utils'
  * restructure.
  */
 
-export const SITEMAP_SECTIONS = ['core', 'directory', 'towns', 'news'] as const
+export const SITEMAP_SECTIONS = [
+  'core',
+  'directory',
+  'towns',
+  'news',
+  'topics',
+] as const
 
 export type SitemapSection = (typeof SITEMAP_SECTIONS)[number]
 
@@ -122,13 +129,42 @@ export async function buildSitemapSection(
   }
 
   if (section === 'news') {
-    const posts = await getLatestNews(1000)
-    return posts.map((post) => ({
-      loc: absoluteUrl(`/news/${post.slug}`),
-      lastmod: new Date(post.updated_at).toISOString(),
-      changefreq: 'monthly',
-      priority: 0.7,
-    }))
+    const [posts, towns] = await Promise.all([
+      getLatestNews(1000),
+      getTownsWithCounts(),
+    ])
+    return [
+      ...posts.map((post) => ({
+        loc: absoluteUrl(`/news/${post.slug}`),
+        lastmod: new Date(post.updated_at).toISOString(),
+        changefreq: 'monthly',
+        priority: 0.7,
+      })),
+      // Local news feeds. Every known town gets one, as with the directory:
+      // an empty feed still ranks for "<town> news" and still carries the
+      // weather and the directory cross-link.
+      ...towns.map((town) => ({
+        loc: absoluteUrl(`/news/town/${town.slug}`),
+        lastmod: now,
+        changefreq: 'daily',
+        priority: 0.6,
+      })),
+    ]
+  }
+
+  if (section === 'topics') {
+    const topics = await getTopicsWithCounts()
+    return [
+      { loc: absoluteUrl('/topics'), lastmod: now, changefreq: 'weekly', priority: 0.7 },
+      ...topics.map((entry) => ({
+        loc: absoluteUrl(`/topics/${entry.topic.slug}`),
+        lastmod: new Date(entry.topic.updated_at).toISOString(),
+        changefreq: 'weekly',
+        // A topic with stories is a real landing page; an empty one is a
+        // promise. Both are crawlable, but they are not equally important.
+        priority: entry.count > 0 ? 0.8 : 0.4,
+      })),
+    ]
   }
 
   // core

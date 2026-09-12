@@ -91,6 +91,38 @@ export interface Section extends SeoFields {
   updated_at: string
 }
 
+/**
+ * How a topic is grouped on /topics. Presentation only — nothing branches on
+ * a specific kind, so adding one is a data change, not a code change.
+ */
+export type TopicKind = 'subject' | 'place' | 'person' | 'event'
+
+/**
+ * What a story is *about*, as distinct from its `category` (the kind of story)
+ * and its `town` (where it happened). A post has many topics via
+ * `news_post_topics`.
+ */
+export interface Topic extends SeoFields {
+  id: string
+  name: string
+  slug: string
+  kind: TopicKind
+  description: string | null
+  /** Editorial intro shown at the top of the topic page. */
+  intro: RichTextDoc | null
+  /** Chosen by an editor for the "In the parish now" bar. Not measured. */
+  featured: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+/** A topic with how many published stories carry it. */
+export interface TopicWithCount {
+  topic: Topic
+  count: number
+}
+
 export interface Author {
   id: string
   user_id: string | null

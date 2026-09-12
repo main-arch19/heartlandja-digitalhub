@@ -131,6 +131,10 @@ export function townSlug(town: string): string {
   return slugify(town)
 }
 
+export function topicSlug(topic: string): string {
+  return slugify(topic)
+}
+
 /**
  * Reading time in whole minutes, from a word count.
  *

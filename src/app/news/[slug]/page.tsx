@@ -5,11 +5,13 @@ import { notFound } from 'next/navigation'
 import { RichText, richTextToPlainText } from '@/components/editorial/rich-text'
 import { RelatedListings } from '@/components/directory/listing-card'
 import { Breadcrumbs } from '@/components/layout/breadcrumbs'
+import { StoryEyebrow, TopicChips } from '@/components/news/eyebrow'
 import { ShareRow } from '@/components/social/share-row'
 import { JsonLd } from '@/components/seo/json-ld'
 import { NEWS_CATEGORY_LABELS } from '@/lib/constants'
 import { getRelatedListings } from '@/lib/data/directory'
 import { getNewsBySlug } from '@/lib/data/news'
+import { getTopicsForPost } from '@/lib/data/topics'
 import { breadcrumbJsonLd, newsArticleJsonLd } from '@/lib/seo/jsonld'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { formatDate, townSlug, truncate } from '@/lib/utils'
@@ -58,7 +60,10 @@ export default async function NewsPostPage({ params }: PageProps) {
   if (!post || post.status !== 'published') notFound()
 
   // The internal-linking mechanism: match listings to the story's town.
-  const related = await getRelatedListings({ town: post.town, limit: 5 })
+  const [related, topics] = await Promise.all([
+    getRelatedListings({ town: post.town, limit: 5 }),
+    getTopicsForPost(post.id),
+  ])
 
   const path = `/news/${slug}`
   const crumbs = [
@@ -76,7 +81,9 @@ export default async function NewsPostPage({ params }: PageProps) {
 
         <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
           <article>
-            <p className="eyebrow">{NEWS_CATEGORY_LABELS[post.category]}</p>
+            {/* Linked here: on the story page the eyebrow is navigation, and
+                nothing wraps it in a stretched link. */}
+            <StoryEyebrow post={post} topics={topics} linked />
 
             <h1 className="mt-2 font-display text-3xl font-semibold leading-tight sm:text-[2.5rem]">
               {post.title}
@@ -104,6 +111,12 @@ export default async function NewsPostPage({ params }: PageProps) {
             <hr className="rule-gold my-7" />
 
             <RichText doc={post.body} />
+
+            {topics.length > 0 ? (
+              <div className="mt-10 border-t border-rule pt-5">
+                <TopicChips topics={topics} label="Filed under" />
+              </div>
+            ) : null}
 
             <div className="mt-10">
               <ShareRow path={path} title={post.title} />

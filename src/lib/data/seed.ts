@@ -22,6 +22,7 @@ import type {
   ListingTier,
   NewsPost,
   Section,
+  Topic,
   TownCopy,
 } from '@/types/db'
 
@@ -945,4 +946,189 @@ export const seedNewsPosts: NewsPost[] = [
   },
   ...moreNews,
 ]
+
+// ---------------------------------------------------------------------------
+// Topics — what a story is ABOUT, as opposed to its category (what KIND of
+// story it is) or its town (where it happened). ALL FICTIONAL, like everything
+// else in this file: these are invented subjects for invented stories.
+//
+// `featured` drives the "In the parish now" bar. It is an editor's choice, not
+// a measurement — nothing counts news views, so nothing here claims to.
+// ---------------------------------------------------------------------------
+
+function topic(input: {
+  id: string
+  name: string
+  slug: string
+  kind: Topic['kind']
+  description: string
+  featured?: boolean
+  sortOrder?: number
+  intro?: string[]
+}): Topic {
+  return {
+    id: input.id,
+    name: input.name,
+    slug: input.slug,
+    kind: input.kind,
+    description: input.description,
+    intro: input.intro ? paragraphDoc(...input.intro) : null,
+    featured: input.featured ?? false,
+    sort_order: input.sortOrder ?? 0,
+    seo_title: null,
+    seo_description: null,
+    og_image_url: null,
+    canonical_url: null,
+    noindex: false,
+    created_at: now,
+    updated_at: now,
+  }
+}
+
+export const seedTopics: Topic[] = [
+  topic({
+    id: 'topic-denbigh-show',
+    name: 'Denbigh Agricultural Show',
+    slug: 'denbigh-agricultural-show',
+    kind: 'event',
+    description:
+      'The annual agricultural and industrial show held at the Denbigh Showground.',
+    featured: true,
+    sortOrder: 1,
+    intro: [
+      'The Denbigh Agricultural, Industrial and Food Show is held each year at the Denbigh Showground outside May Pen, drawing farmers and exhibitors from every parish.',
+      'Heartland JA follows the show, the ground and the road and transport arrangements that surround it.',
+    ],
+  }),
+  topic({
+    id: 'topic-parish-council',
+    name: 'Parish Council',
+    slug: 'parish-council',
+    kind: 'subject',
+    description:
+      'Decisions of the Clarendon Municipal Corporation and what they mean for residents.',
+    featured: true,
+    sortOrder: 2,
+    intro: [
+      'Council decisions shape the market, the roads, the water supply and the permits every business in the parish depends on.',
+      'This page collects our reporting on what the council has decided and what follows from it.',
+    ],
+  }),
+  topic({
+    id: 'topic-roads-transport',
+    name: 'Roads and Transport',
+    slug: 'roads-and-transport',
+    kind: 'subject',
+    description:
+      'Road works, closures, bridge repairs and transport across Clarendon.',
+    featured: true,
+    sortOrder: 3,
+  }),
+  topic({
+    id: 'topic-schools',
+    name: 'Clarendon Schools',
+    slug: 'clarendon-schools',
+    kind: 'subject',
+    description:
+      'Examination results, school news and education across the parish.',
+    featured: true,
+    sortOrder: 4,
+  }),
+  topic({
+    id: 'topic-cricket',
+    name: 'Clarendon Cricket',
+    slug: 'clarendon-cricket',
+    kind: 'subject',
+    description: 'Parish cricket — fixtures, results and the clubs behind them.',
+    sortOrder: 5,
+  }),
+  topic({
+    id: 'topic-athletics',
+    name: 'Athletics',
+    slug: 'athletics',
+    kind: 'subject',
+    description: 'Track and field across Clarendon, from trials to championships.',
+    sortOrder: 6,
+  }),
+  topic({
+    id: 'topic-churches',
+    name: 'Churches',
+    slug: 'churches',
+    kind: 'subject',
+    description: 'Congregations, anniversaries and church life in the parish.',
+    sortOrder: 7,
+  }),
+  topic({
+    id: 'topic-farming',
+    name: 'Farming',
+    slug: 'farming',
+    kind: 'subject',
+    description: 'Agriculture, growers and the produce trade in Clarendon.',
+    featured: true,
+    sortOrder: 8,
+  }),
+  topic({
+    id: 'topic-fishing',
+    name: 'Fishing',
+    slug: 'fishing',
+    kind: 'subject',
+    description:
+      'The fishing beaches of south Clarendon and the communities around them.',
+    sortOrder: 9,
+  }),
+  topic({
+    id: 'topic-water-supply',
+    name: 'Water Supply',
+    slug: 'water-supply',
+    kind: 'subject',
+    description: 'Supply, storage and reliability of water across the parish.',
+    sortOrder: 10,
+  }),
+  topic({
+    id: 'topic-new-business',
+    name: 'New Businesses',
+    slug: 'new-businesses',
+    kind: 'subject',
+    description: 'Openings, expansions and new trade in Clarendon.',
+    sortOrder: 11,
+  }),
+  topic({
+    id: 'topic-may-pen-market',
+    name: 'May Pen Market',
+    slug: 'may-pen-market',
+    kind: 'place',
+    description: 'The parish market at May Pen — traders, works and trading days.',
+    sortOrder: 12,
+  }),
+]
+
+/**
+ * Which topics each seeded story carries.
+ *
+ * Kept as a map from post id rather than a field on the post so the shape of
+ * `NewsPost` stays exactly what the database returns — the join lives in
+ * `news_post_topics`, and the seed mirrors that rather than inventing a
+ * denormalised field the real reader would not have.
+ */
+export const seedNewsPostTopics: Record<string, string[]> = {
+  'news-denbigh-road': ['topic-roads-transport', 'topic-denbigh-show'],
+  'news-hardware-opening': ['topic-new-business'],
+  'news-schools-cxc': ['topic-schools'],
+  'news-council-market': [
+    'topic-parish-council',
+    'topic-may-pen-market',
+    'topic-new-business',
+  ],
+  'news-glenmuir-cape': ['topic-schools'],
+  'news-chapelton-church': ['topic-churches'],
+  'news-cricket-final': ['topic-cricket'],
+  'news-milk-river-road': ['topic-roads-transport'],
+  'news-lionel-town-bakery': ['topic-new-business'],
+  'news-obituary-teacher': ['topic-schools'],
+  'news-council-water': ['topic-parish-council', 'topic-water-supply'],
+  'news-athletics-trials': ['topic-athletics', 'topic-denbigh-show'],
+  'news-four-paths-shop': ['topic-new-business', 'topic-farming'],
+  'news-rocky-point-fishing': ['topic-fishing'],
+  'news-toll-gate-primary': ['topic-schools'],
+}
 

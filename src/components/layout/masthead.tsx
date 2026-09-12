@@ -11,6 +11,7 @@ import { MobileNav } from './mobile-nav'
 
 export const NAV_LINKS = [
   { href: '/news', label: 'News' },
+  { href: '/topics', label: 'Topics' },
   { href: '/magazine', label: 'Magazine' },
   { href: '/history', label: 'History' },
   { href: '/directory', label: 'Directory' },

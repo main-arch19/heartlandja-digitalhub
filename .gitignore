@@ -46,3 +46,6 @@ next-env.d.ts
 # Local env
 .env.local
 .env*.local
+
+# Playwright MCP scan artifacts (browser snapshots, console logs)
+.playwright-mcp/

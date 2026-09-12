@@ -1,9 +1,9 @@
 import Link from 'next/link'
 
 import { richTextToPlainText } from '@/components/editorial/rich-text'
-import { NEWS_CATEGORY_LABELS } from '@/lib/constants'
+import { StoryEyebrow } from '@/components/news/eyebrow'
 import { formatDate, readingTimeFromText, townSlug } from '@/lib/utils'
-import type { NewsPost } from '@/types/db'
+import type { NewsPost, Topic } from '@/types/db'
 
 /**
  * News story rows.
@@ -23,21 +23,6 @@ import type { NewsPost } from '@/types/db'
  * The typography is Heartland's own — Fraunces headlines, gold eyebrows, cream
  * and white grounds — not Ground News' colours or their sans-everywhere stack.
  */
-
-/** `Road Works · Denbigh` — the topic · place eyebrow. */
-function StoryEyebrow({ post }: { post: NewsPost }) {
-  return (
-    <p className="eyebrow">
-      {NEWS_CATEGORY_LABELS[post.category]}
-      {post.town ? (
-        <>
-          <span aria-hidden="true"> · </span>
-          {post.town}
-        </>
-      ) : null}
-    </p>
-  )
-}
 
 /** `12 January 2026 · 2 min read` */
 function StoryMeta({ post, short = false }: { post: NewsPost; short?: boolean }) {
@@ -60,10 +45,19 @@ function StoryMeta({ post, short = false }: { post: NewsPost; short?: boolean })
  * Deliberately the only story on the index that gets an image: if everything
  * carries one, nothing leads.
  */
-export function StoryLead({ post }: { post: NewsPost }) {
+export function StoryLead({
+  post,
+  topics = [],
+  excludeTopicId,
+}: {
+  post: NewsPost
+  topics?: Topic[]
+  excludeTopicId?: string
+}) {
   return (
     <article className="relative pb-8">
-      <StoryEyebrow post={post} />
+      {/* Not linked: the whole card is already one stretched-link tap target. */}
+      <StoryEyebrow post={post} topics={topics} excludeTopicId={excludeTopicId} />
 
       <h2 className="mt-2 font-display text-3xl font-semibold leading-tight sm:text-[2.25rem]">
         <Link
@@ -92,10 +86,19 @@ export function StoryLead({ post }: { post: NewsPost }) {
  * publication's visual language already leans on rules and they read as
  * editorial rather than as chrome.
  */
-export function StoryRow({ post }: { post: NewsPost }) {
+export function StoryRow({
+  post,
+  topics = [],
+  excludeTopicId,
+}: {
+  post: NewsPost
+  topics?: Topic[]
+  excludeTopicId?: string
+}) {
   return (
     <article className="relative border-b border-rule py-4 last:border-0">
-      <StoryEyebrow post={post} />
+      {/* Not linked: the whole row is already one stretched-link tap target. */}
+      <StoryEyebrow post={post} topics={topics} excludeTopicId={excludeTopicId} />
 
       <h3 className="mt-1.5 font-display text-xl font-semibold leading-snug sm:text-[1.375rem]">
         <Link
