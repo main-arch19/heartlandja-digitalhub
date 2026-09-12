@@ -72,6 +72,79 @@ export async function getNewsBySlug(slug: string): Promise<NewsPost | null> {
   return (data as NewsPost) ?? null
 }
 
+export interface NewsIndexResult {
+  posts: NewsPost[]
+  total: number
+  page: number
+  totalPages: number
+  /** Post counts per category, for the filter chips. Always the unfiltered counts. */
+  categoryCounts: Record<string, number>
+  /** Towns appearing in the news, most recent first. */
+  towns: string[]
+}
+
+/**
+ * The /news index: filtered, paginated, with the counts the filter chips need.
+ *
+ * Category counts are deliberately computed across ALL published posts, not the
+ * filtered set — a chip showing "Road Works 0" while you are filtered to road
+ * works would be nonsense. They tell you what is available, not what is shown.
+ */
+export async function getNewsIndex(opts: {
+  category?: string | null
+  page?: number
+  perPage?: number
+}): Promise<NewsIndexResult> {
+  const perPage = opts.perPage ?? 12
+  const page = Math.max(1, opts.page ?? 1)
+
+  const all = hasSupabase() ? await fetchAllPublished() : publishedSeed()
+
+  const categoryCounts: Record<string, number> = {}
+  for (const post of all) {
+    categoryCounts[post.category] = (categoryCounts[post.category] ?? 0) + 1
+  }
+
+  const towns = [...new Set(all.map((p) => p.town).filter((t): t is string => !!t))]
+
+  const filtered = opts.category
+    ? all.filter((p) => p.category === opts.category)
+    : all
+
+  const total = filtered.length
+  const totalPages = Math.max(1, Math.ceil(total / perPage))
+  const start = (page - 1) * perPage
+
+  return {
+    posts: filtered.slice(start, start + perPage),
+    total,
+    page,
+    totalPages,
+    categoryCounts,
+    towns,
+  }
+}
+
+/**
+ * All published posts, newest first.
+ *
+ * Paginating in memory rather than in SQL is the right trade at this scale — a
+ * weekly parish paper accumulates a few hundred posts a year, and the counts
+ * for the filter chips need the whole set anyway. If the archive ever grows
+ * past a few thousand, move the count to a SQL aggregate and the slice to
+ * `.range()`.
+ */
+async function fetchAllPublished(): Promise<NewsPost[]> {
+  const supabase = await getSupabaseServerClient()
+  const { data } = await supabase!
+    .from('news_posts')
+    .select('*')
+    .eq('status', 'published')
+    .lte('publish_date', new Date().toISOString())
+    .order('publish_date', { ascending: false })
+  return (data as NewsPost[]) ?? []
+}
+
 export async function getNewsByTown(town: string, limit = 4): Promise<NewsPost[]> {
   if (!hasSupabase()) {
     return publishedSeed()

@@ -132,6 +132,27 @@ export function townSlug(town: string): string {
 }
 
 /**
+ * Reading time in whole minutes, from a word count.
+ *
+ * 200 wpm is the conventional figure for considered reading of news prose.
+ * Floored at 1 — "0 min read" is noise, and a two-line road-works notice is
+ * still a minute of someone's attention.
+ *
+ * The count comes from the rendered plain text, so it reflects what a reader
+ * actually reads rather than the size of the underlying document structure.
+ */
+export function readingTimeFromText(text: string): number {
+  const words = text.trim().split(/\s+/).filter(Boolean).length
+  if (words === 0) return 1
+  // Ceiling, not rounding. With Math.round nothing reads as "2 min" until 300
+  // words, so a whole page of parish news — where most items run 60–280 words —
+  // would show an identical "1 min read" on every row and the figure would stop
+  // carrying information. Rounding up also never understates the time, which is
+  // the right direction to err for a reader deciding whether to start.
+  return Math.max(1, Math.ceil(words / 200))
+}
+
+/**
  * Whole days from now until a date, negative if it has passed.
  *
  * Reading the clock is impure, so it is isolated here rather than called inline

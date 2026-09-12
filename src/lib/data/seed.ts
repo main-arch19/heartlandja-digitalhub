@@ -624,6 +624,243 @@ function paragraphDoc(...paragraphs: string[]) {
   }
 }
 
+/**
+ * Additional seeded news, kept terse with a helper so the list stays readable.
+ * ALL FICTIONAL — invented Clarendon stories for development and demonstration.
+ */
+function newsPost(input: {
+  id: string
+  section: string
+  title: string
+  slug: string
+  excerpt: string
+  paragraphs: string[]
+  category: NewsPost['category']
+  town: string | null
+  date: string
+}): NewsPost {
+  return {
+    id: input.id,
+    section_id: input.section,
+    author_id: null,
+    title: input.title,
+    slug: input.slug,
+    excerpt: input.excerpt,
+    body: paragraphDoc(...input.paragraphs),
+    category: input.category,
+    hero_image_url: null,
+    hero_image_alt: null,
+    town: input.town,
+    publish_date: input.date,
+    status: 'published',
+    seo_title: null,
+    seo_description: null,
+    og_image_url: null,
+    canonical_url: null,
+    noindex: false,
+    created_at: now,
+    updated_at: now,
+  }
+}
+
+const moreNews: NewsPost[] = [
+  newsPost({
+    id: 'news-council-market',
+    section: 'sec-business',
+    title: 'Council approves May Pen market refurbishment',
+    slug: 'council-approves-may-pen-market-refurbishment',
+    excerpt:
+      'The Clarendon Municipal Corporation voted to fund new roofing, drainage and sanitary facilities at the May Pen market, with work to begin in the new quarter.',
+    paragraphs: [
+      'The Clarendon Municipal Corporation has approved funding for a refurbishment of the May Pen market, covering new roofing over the produce section, improved drainage and rebuilt sanitary facilities.',
+      'Vendors have raised concerns about flooding in the lower section for several years. Water collecting along the eastern wall has repeatedly spoiled produce and made the ground unsafe underfoot during the wet months. The corporation said the drainage work is intended to address that directly, with new channels running out to the existing storm system rather than the shallow soakaways currently in place.',
+      'The roofing work covers the produce section and the meat and fish stalls, both of which have been patched piecemeal for the better part of a decade. Vendors trading under the worst of the leaks have been offered temporary places along the northern aisle while their sections are closed.',
+      'Trading will continue throughout, with sections closed in rotation rather than a full shutdown. The corporation was explicit on that point: a full closure would push vendors onto the roadside for months, which it described as unacceptable for both traders and traffic.',
+      'A vendors committee will meet the works contractor before the first section closes, to agree the rotation order and the notice period each group receives. The corporation has asked that no section be closed with less than two weeks notice.',
+      'Funding comes from the current capital allocation, with the corporation noting that no increase in market fees is proposed to cover it. Councillors for the surrounding divisions supported the vote, though two asked for a written timetable before work begins.',
+    ],
+    category: 'council_decisions',
+    town: 'May Pen',
+    date: '2026-01-14T08:30:00.000Z',
+  }),
+  newsPost({
+    id: 'news-glenmuir-cape',
+    section: 'sec-education',
+    title: 'Glenmuir students take top CAPE results in the parish',
+    slug: 'glenmuir-students-take-top-cape-results',
+    excerpt:
+      'Four students recorded straight distinctions, with the school reporting its strongest unit passes in physics and communication studies in several years.',
+    paragraphs: [
+      'Glenmuir High School has recorded the strongest CAPE performance in Clarendon this year, with four students achieving straight distinctions across their units.',
+      'Physics and communication studies both showed marked improvement on the previous year, which the school attributed to restructured afternoon sessions.',
+      'The principal credited sustained attendance and a tutoring programme run with past students.',
+    ],
+    category: 'school_results',
+    town: 'May Pen',
+    date: '2026-01-13T14:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-chapelton-church',
+    section: 'sec-culture',
+    title: 'Chapelton church marks 150 years with week of services',
+    slug: 'chapelton-church-marks-150-years',
+    excerpt:
+      'A week of services, a heritage exhibition and a community dinner will mark the anniversary, with former members travelling back to the parish.',
+    paragraphs: [
+      'The parish church at Chapelton marks its 150th anniversary this month with a week of services, a heritage exhibition and a community dinner on the closing Sunday.',
+      'The exhibition will display registers, photographs and correspondence held by the church since the 1870s.',
+      'Organisers expect former members to travel back from Kingston and overseas for the closing weekend.',
+    ],
+    category: 'community_events',
+    town: 'Chapelton',
+    date: '2026-01-11T10:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-cricket-final',
+    section: 'sec-sports',
+    title: 'Frankfield take parish cricket final by four wickets',
+    slug: 'frankfield-take-parish-cricket-final',
+    excerpt:
+      'A late partnership settled a tight final at Denbigh, with Frankfield chasing down 184 with three overs to spare.',
+    paragraphs: [
+      'Frankfield won the Clarendon parish cricket final by four wickets at Denbigh on Saturday, chasing 184 with three overs remaining.',
+      'The match turned on a seventh-wicket partnership of 61 after Frankfield had slipped to 96 for 6.',
+      'It is the club\'s first parish title since 2019.',
+    ],
+    category: 'sports_results',
+    town: 'Frankfield',
+    date: '2026-01-10T18:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-milk-river-road',
+    section: 'sec-business',
+    title: 'Milk River road closed for bridge inspection',
+    slug: 'milk-river-road-closed-for-bridge-inspection',
+    excerpt:
+      'The approach to the mineral baths will be closed for two days while engineers carry out a structural inspection of the bridge.',
+    paragraphs: [
+      'The road leading to the Milk River mineral baths will close for two days from Wednesday while engineers carry out a structural inspection of the bridge.',
+      'A diversion will be signposted via Race Course. Buses serving the bath will terminate at the junction during the closure.',
+      'The National Works Agency said the inspection is routine and no defects have been reported.',
+    ],
+    category: 'road_works',
+    town: 'Milk River',
+    date: '2026-01-09T07:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-lionel-town-bakery',
+    section: 'sec-business',
+    title: 'Lionel Town bakery opens second counter',
+    slug: 'lionel-town-bakery-opens-second-counter',
+    excerpt:
+      'The High Street bakery has opened a second service counter and extended trading hours to Saturday evenings.',
+    paragraphs: [
+      'The bakery on High Street in Lionel Town has opened a second service counter, adding four jobs and extending Saturday trading into the evening.',
+      'The expansion follows steady growth in cake and party orders, which the owners said now account for a third of turnover.',
+      'The premises have been baking in Lionel Town since 1994.',
+    ],
+    category: 'business_openings',
+    town: 'Lionel Town',
+    date: '2026-01-08T09:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-obituary-teacher',
+    section: 'sec-culture',
+    title: 'Retired headteacher Iris Campbell remembered in Hayes',
+    slug: 'retired-headteacher-iris-campbell-remembered',
+    excerpt:
+      'Mrs Campbell taught in Hayes for thirty-one years and led the primary school through its 1980s expansion. She was 84.',
+    paragraphs: [
+      'Iris Campbell, who taught in Hayes for thirty-one years and served as headteacher of the primary school through its expansion in the 1980s, has died aged 84.',
+      'Former pupils gathered at the school on Sunday to mark her passing.',
+      'A thanksgiving service will be held at the parish church next Saturday.',
+    ],
+    category: 'obituaries',
+    town: 'Hayes',
+    date: '2026-01-07T12:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-council-water',
+    section: 'sec-business',
+    title: 'Council presses for water supply upgrade in north Clarendon',
+    slug: 'council-presses-water-supply-upgrade-north-clarendon',
+    excerpt:
+      'Councillors voted to formally request accelerated works from the National Water Commission after repeated outages in Kellits and Crofts Hill.',
+    paragraphs: [
+      'Clarendon councillors have voted to formally request accelerated supply works from the National Water Commission following repeated outages across the north of the parish.',
+      'Residents in Kellits and Crofts Hill have reported interruptions lasting several days at a time through the dry season.',
+      'The corporation will seek a timetable for the upgrade at its next sitting.',
+    ],
+    category: 'council_decisions',
+    town: 'Kellits',
+    date: '2026-01-06T11:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-athletics-trials',
+    section: 'sec-sports',
+    title: 'Parish athletics trials draw record entry at Denbigh',
+    slug: 'parish-athletics-trials-record-entry-denbigh',
+    excerpt:
+      'More than four hundred athletes from eighteen schools entered this year\'s trials, the largest field the meet has recorded.',
+    paragraphs: [
+      'More than four hundred athletes from eighteen Clarendon schools entered this year\'s parish athletics trials at Denbigh, the largest field the meet has recorded.',
+      'Organisers added a second day to accommodate the entry.',
+      'Selected athletes go forward to the regional championships next month.',
+    ],
+    category: 'sports_results',
+    town: 'Denbigh',
+    date: '2026-01-05T16:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-four-paths-shop',
+    section: 'sec-business',
+    title: 'Hardware and farm supply opens at Four Paths',
+    slug: 'hardware-and-farm-supply-opens-four-paths',
+    excerpt:
+      'The new premises stock building materials alongside feed and veterinary supplies, filling a gap for farmers in the south of the parish.',
+    paragraphs: [
+      'A combined hardware and farm supply has opened at Four Paths, stocking building materials alongside animal feed and veterinary supplies.',
+      'The owners said the mix was chosen because farmers in the south of the parish have been travelling to May Pen for both.',
+      'The premises employ six people.',
+    ],
+    category: 'business_openings',
+    town: 'Four Paths',
+    date: '2026-01-04T09:30:00.000Z',
+  }),
+  newsPost({
+    id: 'news-rocky-point-fishing',
+    section: 'sec-culture',
+    title: 'Rocky Point fishing beach festival returns in February',
+    slug: 'rocky-point-fishing-beach-festival-returns',
+    excerpt:
+      'The festival returns after a three-year gap, with boat races, a seafood market and music through the afternoon.',
+    paragraphs: [
+      'The Rocky Point fishing beach festival returns in February after a three-year gap, with boat races, a seafood market and music through the afternoon.',
+      'Organisers said the break was due to funding rather than a lack of interest, and that vendor places filled within a fortnight of being announced.',
+      'Proceeds support the fishermen\'s co-operative.',
+    ],
+    category: 'community_events',
+    town: 'Rocky Point',
+    date: '2026-01-03T13:00:00.000Z',
+  }),
+  newsPost({
+    id: 'news-toll-gate-primary',
+    section: 'sec-education',
+    title: 'Toll Gate primary reports full pass rate in national tests',
+    slug: 'toll-gate-primary-full-pass-rate-national-tests',
+    excerpt:
+      'Every candidate at the school passed this year\'s national assessments, a first for the school in its current form.',
+    paragraphs: [
+      'Every candidate entered by Toll Gate primary passed this year\'s national assessments, a first for the school.',
+      'Staff pointed to small-group reading sessions introduced two years ago as the main change.',
+      'The school will expand the sessions to the year below from next term.',
+    ],
+    category: 'school_results',
+    town: 'Toll Gate',
+    date: '2026-01-02T10:30:00.000Z',
+  }),
+]
+
 export const seedNewsPosts: NewsPost[] = [
   {
     id: 'news-denbigh-road',
@@ -706,4 +943,6 @@ export const seedNewsPosts: NewsPost[] = [
     created_at: now,
     updated_at: now,
   },
+  ...moreNews,
 ]
+
