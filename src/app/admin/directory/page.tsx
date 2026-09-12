@@ -1,3 +1,4 @@
+import { requireRole } from '@/lib/auth'
 import Link from 'next/link'
 
 import { getAllBusinessesAdmin } from '@/lib/data/admin'
@@ -33,6 +34,11 @@ interface PageProps {
 }
 
 export default async function AdminDirectoryPage({ searchParams }: PageProps) {
+  // Commercial admin: the directory and dashboard are admin/editor only.
+  // Enforced HERE as well as in the layout — the layout admits
+  // contributors so they can reach the news editor.
+  await requireRole('admin', 'editor')
+
   const { status } = await searchParams
   const filter = (status ?? 'all') as BusinessStatus | 'all'
 

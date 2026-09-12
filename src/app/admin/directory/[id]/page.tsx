@@ -1,3 +1,4 @@
+import { requireRole } from '@/lib/auth'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -19,6 +20,11 @@ interface PageProps {
 }
 
 export default async function AdminListingPage({ params }: PageProps) {
+  // Commercial admin: the directory and dashboard are admin/editor only.
+  // Enforced HERE as well as in the layout — the layout admits
+  // contributors so they can reach the news editor.
+  await requireRole('admin', 'editor')
+
   const { id } = await params
 
   const [business, tiers, payments] = await Promise.all([

@@ -233,3 +233,173 @@ export async function submitListingEnquiry(
     message: 'Thank you — your enquiry has been received. We will be in touch shortly.',
   }
 }
+
+// ---------------------------------------------------------------------------
+// Editorial: news posts
+//
+// This is the constraint the whole brief rests on — Ventley and his
+// contributors publishing a weekly news post without a developer. The schema
+// here is deliberately forgiving on everything except what would break a page:
+// an editor filing copy at speed should not be blocked by a validation error
+// over an optional field.
+// ---------------------------------------------------------------------------
+
+/** Tiptap JSON arrives as a string from the hidden input; parse and sanity-check it. */
+const richTextField = z
+  .string()
+  .optional()
+  .transform((value, ctx) => {
+    if (!value) return null
+    try {
+      const parsed = JSON.parse(value)
+      if (parsed?.type !== 'doc') throw new Error('not a document')
+      return parsed
+    } catch {
+      ctx.addIssue({ code: 'custom', message: 'The story body could not be read.' })
+      return z.NEVER
+    }
+  })
+
+const newsPostSchema = z.object({
+  id: z.string().optional().or(z.literal('')),
+  title: z.string().trim().min(3, 'Give the story a headline').max(200),
+  slug: z.string().trim().max(200).optional().or(z.literal('')),
+  excerpt: z.string().trim().max(400).optional().or(z.literal('')),
+  body: richTextField,
+  category: z.enum([
+    'council_decisions',
+    'school_results',
+    'community_events',
+    'sports_results',
+    'road_works',
+    'business_openings',
+    'obituaries',
+  ]),
+  town: z.string().trim().max(80).optional().or(z.literal('')),
+  status: z.enum(['draft', 'scheduled', 'published', 'archived']),
+  publish_date: z.string().optional().or(z.literal('')),
+  seo_title: z.string().trim().max(200).optional().or(z.literal('')),
+  seo_description: z.string().trim().max(400).optional().or(z.literal('')),
+})
+
+/**
+ * URL-safe slug from a headline.
+ *
+ * Kept here rather than imported from lib/utils because this file is a server
+ * action module — everything it imports is pulled into the action bundle.
+ */
+function toSlug(input: string): string {
+  return input
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 90)
+}
+
+export async function saveNewsPost(
+  _prev: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  const session = await requireRole('admin', 'editor', 'contributor')
+
+  const parsed = newsPostSchema.safeParse(Object.fromEntries(formData))
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {}
+    for (const issue of parsed.error.issues) {
+      const key = issue.path[0]
+      if (typeof key === 'string') fieldErrors[key] = issue.message
+    }
+    return { ok: false, message: 'Please check the highlighted fields.', fieldErrors }
+  }
+
+  const values = parsed.data
+
+  // A contributor may write and revise drafts, but publishing is an editor's
+  // decision. RLS enforces this too; the check here gives a clear message
+  // instead of an opaque database error.
+  if (session.role === 'contributor' && values.status !== 'draft') {
+    return {
+      ok: false,
+      message:
+        'Contributors can save drafts. Ask an editor to review and publish the story.',
+      fieldErrors: { status: 'Only an editor can publish' },
+    }
+  }
+
+  if (!hasSupabase()) return NO_BACKEND
+
+  const supabase = await getSupabaseServerClient()
+
+  // Slug is derived from the headline unless one was entered. Once a story is
+  // published the slug is its permanent address, so it is never auto-changed
+  // underneath an existing post — a changed URL is a broken link to anyone who
+  // shared it.
+  const slug = values.slug?.trim() || toSlug(values.title)
+
+  const record = {
+    title: values.title,
+    slug,
+    excerpt: values.excerpt || null,
+    body: values.body,
+    category: values.category,
+    town: values.town || null,
+    status: values.status,
+    publish_date:
+      values.publish_date ||
+      (values.status === 'published' ? new Date().toISOString() : null),
+    seo_title: values.seo_title || null,
+    seo_description: values.seo_description || null,
+  }
+
+  const { error } = values.id
+    ? await supabase!.from('news_posts').update(record).eq('id', values.id)
+    : await supabase!.from('news_posts').insert(record)
+
+  if (error) {
+    // 23505 is a unique violation — almost always the slug colliding with an
+    // existing story, which an editor can fix by editing the URL field.
+    if (error.code === '23505') {
+      return {
+        ok: false,
+        message: 'A story already uses that web address. Edit the URL field and try again.',
+        fieldErrors: { slug: 'Already in use' },
+      }
+    }
+    return { ok: false, message: `Could not save: ${error.message}` }
+  }
+
+  revalidatePath('/news')
+  revalidatePath(`/news/${slug}`)
+  revalidatePath('/')
+
+  return {
+    ok: true,
+    message:
+      values.status === 'published'
+        ? 'Story published.'
+        : 'Draft saved.',
+  }
+}
+
+export async function deleteNewsPost(
+  _prev: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireRole('admin', 'editor')
+
+  const id = String(formData.get('id') ?? '')
+  if (!id) return { ok: false, message: 'No story selected.' }
+
+  if (!hasSupabase()) return NO_BACKEND
+
+  const supabase = await getSupabaseServerClient()
+  const { error } = await supabase!.from('news_posts').delete().eq('id', id)
+
+  if (error) return { ok: false, message: `Could not delete: ${error.message}` }
+
+  revalidatePath('/news')
+  return { ok: true, message: 'Story deleted.' }
+}

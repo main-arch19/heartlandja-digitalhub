@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { requireRole } from '@/lib/auth'
+import type { UserRole } from '@/types/db'
 
 /**
  * Admin shell.
@@ -14,17 +15,35 @@ export const metadata = {
   robots: { index: false, follow: false },
 }
 
+/**
+ * Nav is filtered by role. A contributor writes stories and sees nothing else:
+ * the dashboard and directory are commercial, and their own pages already
+ * enforce admin/editor — showing links that only lead to a 403 is a worse
+ * experience than not showing them.
+ */
 const ADMIN_NAV = [
-  { href: '/admin', label: 'Dashboard' },
-  { href: '/admin/directory', label: 'Directory' },
-] as const
+  { href: '/admin', label: 'Dashboard', roles: ['admin', 'editor'] },
+  { href: '/admin/news', label: 'News', roles: ['admin', 'editor', 'contributor'] },
+  { href: '/admin/directory', label: 'Directory', roles: ['admin', 'editor'] },
+] as const satisfies readonly {
+  href: string
+  label: string
+  roles: readonly UserRole[]
+}[]
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const session = await requireRole('admin', 'editor')
+  // Contributors are admitted here so they can reach /admin/news; every other
+  // admin page still calls requireRole('admin', 'editor') itself. Gating them
+  // out at the layout would have made the news editor unreachable for exactly
+  // the people the brief names as writing the weekly stories.
+  const session = await requireRole('admin', 'editor', 'contributor')
+  const nav = ADMIN_NAV.filter((item) =>
+    (item.roles as readonly UserRole[]).includes(session.role),
+  )
 
   return (
     <div>
@@ -32,7 +51,7 @@ export default async function AdminLayout({
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <nav aria-label="Admin" className="flex items-center gap-5">
             <span className="eyebrow">Admin</span>
-            {ADMIN_NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

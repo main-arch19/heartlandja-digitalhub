@@ -1,3 +1,4 @@
+import { requireRole } from '@/lib/auth'
 import Link from 'next/link'
 
 import {
@@ -16,6 +17,11 @@ import { daysUntil, formatDate, formatMoney } from '@/lib/utils'
  */
 
 export default async function AdminDashboard() {
+  // Commercial admin: the directory and dashboard are admin/editor only.
+  // Enforced HERE as well as in the layout — the layout admits
+  // contributors so they can reach the news editor.
+  await requireRole('admin', 'editor')
+
   const [stats, pending, expiring] = await Promise.all([
     getAdminStats(),
     getPendingBusinesses(),

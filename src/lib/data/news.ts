@@ -72,6 +72,48 @@ export async function getNewsBySlug(slug: string): Promise<NewsPost | null> {
   return (data as NewsPost) ?? null
 }
 
+/**
+ * Every story in every state, for the newsroom.
+ *
+ * Deliberately unlike the public readers: drafts, scheduled and archived posts
+ * all appear, because the point of this list is to show an editor what is
+ * waiting on them. RLS still restricts what a contributor can actually load.
+ */
+export async function getAllNewsAdmin(): Promise<NewsPost[]> {
+  if (!hasSupabase()) {
+    return [...seedNewsPosts].sort(
+      (a, b) =>
+        new Date(b.publish_date ?? b.created_at).getTime() -
+        new Date(a.publish_date ?? a.created_at).getTime(),
+    )
+  }
+
+  const supabase = await getSupabaseServerClient()
+  const { data } = await supabase!
+    .from('news_posts')
+    .select('*')
+    .order('publish_date', { ascending: false, nullsFirst: true })
+    .order('created_at', { ascending: false })
+
+  return (data as NewsPost[]) ?? []
+}
+
+/** A single story by id, in any state — for the editor. */
+export async function getNewsById(id: string): Promise<NewsPost | null> {
+  if (!hasSupabase()) {
+    return seedNewsPosts.find((p) => p.id === id) ?? null
+  }
+
+  const supabase = await getSupabaseServerClient()
+  const { data } = await supabase!
+    .from('news_posts')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
+
+  return (data as NewsPost) ?? null
+}
+
 export interface NewsIndexResult {
   posts: NewsPost[]
   total: number
