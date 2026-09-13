@@ -141,10 +141,14 @@ Photography-forward: where an image exists it leads, and the chrome recedes.
 - Focus is always visible: 2px green outline, 2px offset. Never removed.
 - Transitions are under 200ms and touch colour and `transform` only. **No
   layout animation** — nothing animates a property that triggers reflow.
-- **Motion must report real state, never decorate.** Two pieces of motion exist
-  and both meet that test:
+- **Motion must report real state, never decorate.** Three pieces of motion
+  exist and all three meet that test:
   - `.pressable` — 120ms, `scale(0.98)` on press. On a phone there is no hover,
     so this is the only confirmation a tap registered.
+  - `.open-pulse` — the green dot on an "Open now" badge. Pulses *only* while a
+    business is actually trading; the red "Closed" dot never animates, because
+    nothing is happening. 2000ms, deliberately slow: a directory page can carry
+    twenty of these, and anything faster reads as flicker.
   - `.eq-bar` — the equaliser beside the live radio button. Animates *only*
     while audio is actually playing; idle, disabled and error states render the
     same bars at rest. Unequal durations (900–1400ms) so the bars never sync

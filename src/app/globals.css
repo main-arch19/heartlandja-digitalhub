@@ -391,4 +391,36 @@
     animation-duration: 1000ms;
     animation-delay: 220ms;
   }
+
+  /*
+   * "Open now" — the third and last piece of motion in this design, and it
+   * meets the same test as the other two: it reports real state rather than
+   * decorating. A business trading right now is live information that is
+   * otherwise invisible in a list of twenty cards, and the pulse stops the
+   * moment the business closes. The red "Closed" dot never animates, because
+   * nothing is happening.
+   *
+   * `opacity` and `transform` only — compositor work, no reflow, which matters
+   * because a directory page can carry twenty of these at once.
+   *
+   * 2000ms is deliberately slow. At the 120ms of `.pressable` this would be a
+   * flicker, and twenty flickering dots would be unreadable; at this pace it
+   * reads as a slow breath in peripheral vision. The global
+   * prefers-reduced-motion block already neutralises it.
+   */
+  @keyframes open-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.45;
+      transform: scale(0.82);
+    }
+  }
+
+  .open-pulse {
+    animation: open-pulse 2000ms ease-in-out infinite;
+  }
 }

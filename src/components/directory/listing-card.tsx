@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { OpenStatus } from '@/components/directory/open-status'
 import { townSlug } from '@/lib/utils'
 import type { BusinessWithRelations } from '@/types/db'
 
@@ -53,6 +54,11 @@ export function ListingCard({
         ) : null}
         {business.town}
       </p>
+
+      {/* Whether this business is trading right now — the single most useful
+          thing on a card when someone is scanning twenty plumbers at 7pm.
+          Renders nothing when no hours are recorded. */}
+      <OpenStatus hours={business.hours} size="compact" className="mt-2" />
 
       {business.description ? (
         <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-ink-muted">

@@ -12,6 +12,7 @@ import {
 } from '@/components/directory/contact-actions'
 import { RelatedListings } from '@/components/directory/listing-card'
 import { OpeningHours } from '@/components/directory/opening-hours'
+import { OpenStatus } from '@/components/directory/open-status'
 import { ViewTracker } from '@/components/directory/view-tracker'
 import { Breadcrumbs } from '@/components/layout/breadcrumbs'
 import { ShareRow } from '@/components/social/share-row'
@@ -130,6 +131,10 @@ export default async function ListingPage({ params }: PageProps) {
               </Link>
               , {business.parish}
             </p>
+
+            {/* Directly under the address, because "are they open" is the next
+                question after "where are they". */}
+            <OpenStatus hours={business.hours} className="mt-3" />
 
             {business.description ? (
               <p className="standfirst mt-5 measure">{business.description}</p>

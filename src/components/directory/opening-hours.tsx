@@ -1,77 +1,37 @@
+import { OpenStatus } from '@/components/directory/open-status'
 import { ISO_WEEKDAYS } from '@/lib/constants'
+import { formatTime, isOpenNow, jamaicaNow } from '@/lib/hours'
 import type { OpeningHours as OpeningHoursType } from '@/types/db'
 
 /**
  * Opening hours table.
  *
- * "Open now" is deliberately computed on the server in Jamaica time rather than
+ * The arithmetic lives in `@/lib/hours` rather than here, because the
+ * open/closed badge needs the same calculations plus "when does it open
+ * again". "Open now" is computed on the server in Jamaica time rather than
  * from the visitor's clock — a visitor abroad checking a May Pen shop should
  * see whether it is open *there*.
  */
 
-function jamaicaNow(): { isoWeekday: string; minutes: number } {
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'America/Jamaica',
-    weekday: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).formatToParts(new Date())
-
-  const weekdayMap: Record<string, string> = {
-    Mon: '1', Tue: '2', Wed: '3', Thu: '4', Fri: '5', Sat: '6', Sun: '7',
-  }
-
-  const weekday = parts.find((p) => p.type === 'weekday')?.value ?? 'Mon'
-  const hour = Number(parts.find((p) => p.type === 'hour')?.value ?? '0')
-  const minute = Number(parts.find((p) => p.type === 'minute')?.value ?? '0')
-
-  return { isoWeekday: weekdayMap[weekday] ?? '1', minutes: hour * 60 + minute }
-}
-
-function toMinutes(time: string): number {
-  const [h, m] = time.split(':').map(Number)
-  return (h ?? 0) * 60 + (m ?? 0)
-}
-
-function formatTime(time: string): string {
-  const [h, m] = time.split(':').map(Number)
-  const period = h >= 12 ? 'pm' : 'am'
-  const hour12 = h % 12 === 0 ? 12 : h % 12
-  return m === 0 ? `${hour12}${period}` : `${hour12}:${String(m).padStart(2, '0')}${period}`
-}
-
-export function isOpenNow(hours: OpeningHoursType | null): boolean | null {
-  if (!hours) return null
-  const { isoWeekday, minutes } = jamaicaNow()
-  const today = hours[isoWeekday]
-  if (!today || today.length === 0) return false
-  return today.some(
-    (range) => minutes >= toMinutes(range.open) && minutes < toMinutes(range.close),
-  )
-}
+/**
+ * Re-exported for callers that already import it from this module. The
+ * implementation moved to `@/lib/hours`; prefer importing from there directly
+ * in new code.
+ */
+export { isOpenNow }
 
 export function OpeningHours({ hours }: { hours: OpeningHoursType | null }) {
   if (!hours) return null
 
   const { isoWeekday } = jamaicaNow()
-  const open = isOpenNow(hours)
 
   return (
     <div>
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2 className="eyebrow">Opening hours</h2>
-        {open !== null ? (
-          <span
-            className={
-              open
-                ? 'text-xs font-medium text-success'
-                : 'text-xs font-medium text-ink-faint'
-            }
-          >
-            {open ? 'Open now' : 'Closed now'}
-          </span>
-        ) : null}
+        {/* The same component the cards and the listing header use, so the
+            table can never disagree with the badge above it. */}
+        <OpenStatus hours={hours} size="compact" />
       </div>
       <hr className="rule-gold mt-2 mb-3" />
 
