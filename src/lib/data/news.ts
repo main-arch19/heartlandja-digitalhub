@@ -1,9 +1,20 @@
 import 'server-only'
 
+import { NEWS_CATEGORY_LABELS } from '@/lib/constants'
 import { getSupabaseServerClient, hasSupabase } from '@/lib/supabase/client'
-import type { NewsPost, Section } from '@/types/db'
+import type { NewsCategory, NewsPost, Section } from '@/types/db'
 
 import { seedNewsPosts, seedSections } from './seed'
+
+/**
+ * Category display order.
+ *
+ * Derived from the label map rather than written out again, so adding a
+ * category in one place adds it everywhere. `/news` derives its filter chips
+ * the same way — the declaration order in `constants.ts` is the single source
+ * of how these are sequenced.
+ */
+const CATEGORY_ORDER = Object.keys(NEWS_CATEGORY_LABELS) as NewsCategory[]
 
 /**
  * News and section reads.
@@ -185,6 +196,70 @@ async function fetchAllPublished(): Promise<NewsPost[]> {
     .lte('publish_date', new Date().toISOString())
     .order('publish_date', { ascending: false })
   return (data as NewsPost[]) ?? []
+}
+
+export interface FrontPageNewsGroup {
+  category: NewsCategory
+  posts: NewsPost[]
+}
+
+export interface FrontPageNews {
+  /** The newest story. Null only when nothing is published. */
+  lead: NewsPost | null
+  /** The dense run under the lead — newest first, across all categories. */
+  latest: NewsPost[]
+  /** What is left, bucketed by category so each beat is visibly covered. */
+  groups: FrontPageNewsGroup[]
+}
+
+/**
+ * The front page's news in one pass.
+ *
+ * Three tiers, because a parish front page has to do two things at once: lead
+ * with what happened most recently, and show that the publication covers road
+ * works and school results and the council rather than whatever the week
+ * happened to produce. The chronological run answers the first; the grouped
+ * sections answer the second.
+ *
+ * A story appears exactly once. The groups are built from what the lead and the
+ * latest run did not already use, so the same headline never shows twice on one
+ * screen — which is what makes the grouped tier read as "more of the parish"
+ * rather than as a second pass over the same stories.
+ *
+ * Category order follows the declaration order of `NEWS_CATEGORY_LABELS`, which
+ * is already the de-facto display order — `/news` derives its filter chips the
+ * same way. Two orderings for the same list would drift.
+ */
+export async function getFrontPageNews(
+  opts: { latestCount?: number; perCategory?: number } = {},
+): Promise<FrontPageNews> {
+  const latestCount = opts.latestCount ?? 9
+  const perCategory = opts.perCategory ?? 3
+
+  const all = hasSupabase() ? await fetchAllPublished() : publishedSeed()
+
+  const lead = all[0] ?? null
+  const latest = all.slice(1, 1 + latestCount)
+
+  const shown = new Set<string>()
+  if (lead) shown.add(lead.id)
+  for (const post of latest) shown.add(post.id)
+
+  const byCategory = new Map<NewsCategory, NewsPost[]>()
+  for (const post of all) {
+    if (shown.has(post.id)) continue
+    const list = byCategory.get(post.category) ?? []
+    if (list.length >= perCategory) continue
+    list.push(post)
+    byCategory.set(post.category, list)
+  }
+
+  const groups = CATEGORY_ORDER.flatMap((category) => {
+    const posts = byCategory.get(category)
+    return posts && posts.length > 0 ? [{ category, posts }] : []
+  })
+
+  return { lead, latest, groups }
 }
 
 export async function getNewsByTown(town: string, limit = 4): Promise<NewsPost[]> {

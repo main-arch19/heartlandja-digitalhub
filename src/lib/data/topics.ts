@@ -204,6 +204,59 @@ export async function getTopicsForPost(postId: string): Promise<Topic[]> {
 }
 
 /**
+ * The topics carried by many stories at once, keyed by post id.
+ *
+ * One query for a whole page of rows, where `getTopicsForPost` is one query per
+ * row. A front page or topic feed rendering a dozen stories would otherwise
+ * issue a dozen round trips to build the same map — cheap at this scale, but
+ * needlessly so, and the cost grows with every row added.
+ *
+ * Posts with no topics are simply absent from the map rather than present with
+ * an empty list: `StoryEyebrow` already falls back to the category when handed
+ * nothing, so a missing key and an empty value mean the same thing to callers.
+ */
+export async function getTopicsForPosts(
+  postIds: string[],
+): Promise<Map<string, Topic[]>> {
+  const byPost = new Map<string, Topic[]>()
+  if (postIds.length === 0) return byPost
+
+  if (!hasSupabase()) {
+    const sorted = sortedSeedTopics()
+    for (const postId of postIds) {
+      const ids = seedNewsPostTopics[postId] ?? []
+      if (ids.length === 0) continue
+      byPost.set(
+        postId,
+        sorted.filter((t) => ids.includes(t.id)),
+      )
+    }
+    return byPost
+  }
+
+  const supabase = await getSupabaseServerClient()
+  const { data } = await supabase!
+    .from('news_post_topics')
+    .select('news_post_id, topics!inner(*)')
+    .in('news_post_id', postIds)
+
+  const rows = (data as { news_post_id: string; topics: Topic }[] | null) ?? []
+  for (const row of rows) {
+    const list = byPost.get(row.news_post_id) ?? []
+    list.push(row.topics)
+    byPost.set(row.news_post_id, list)
+  }
+
+  // Same ordering as the single-post reader, so a row renders identically
+  // whichever of the two fetched its topics.
+  for (const list of byPost.values()) {
+    list.sort((a, b) => a.sort_order - b.sort_order || a.name.localeCompare(b.name))
+  }
+
+  return byPost
+}
+
+/**
  * Topics that share stories with this one.
  *
  * Scored on real co-occurrence — how many published stories carry both topics

@@ -12,7 +12,7 @@ import {
   getRelatedTopics,
   getTopicBySlug,
   getTopics,
-  getTopicsForPost,
+  getTopicsForPosts,
 } from '@/lib/data/topics'
 import { breadcrumbJsonLd, itemListJsonLd } from '@/lib/seo/jsonld'
 import { buildMetadata, topicMetaDefaults } from '@/lib/seo/metadata'
@@ -75,15 +75,8 @@ export default async function TopicPage({ params, searchParams }: PageProps) {
   // with no stories yet is a legitimate page that still carries its intro copy.
   if (page > 1 && feed.posts.length === 0) notFound()
 
-  // Topics for each row's eyebrow. One lookup per story on the page — at 12
-  // rows that is cheap, and on seed data it costs nothing at all.
-  const topicsByPost = new Map(
-    await Promise.all(
-      feed.posts.map(
-        async (post) => [post.id, await getTopicsForPost(post.id)] as const,
-      ),
-    ),
-  )
+  // Topics for each row's eyebrow — one query for the whole page.
+  const topicsByPost = await getTopicsForPosts(feed.posts.map((p) => p.id))
 
   const crumbs = [
     { name: 'Topics', path: '/topics' },
