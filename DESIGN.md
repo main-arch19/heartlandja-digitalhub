@@ -139,7 +139,18 @@ Photography-forward: where an image exists it leads, and the chrome recedes.
     the practical mis-hit threshold while keeping editorial density.
   Non-negotiable — this is a phone-first audience, often one-handed.
 - Focus is always visible: 2px green outline, 2px offset. Never removed.
-- Transitions are colour-only and under 200ms. No layout animation.
+- Transitions are under 200ms and touch colour and `transform` only. **No
+  layout animation** — nothing animates a property that triggers reflow.
+- **Motion must report real state, never decorate.** Two pieces of motion exist
+  and both meet that test:
+  - `.pressable` — 120ms, `scale(0.98)` on press. On a phone there is no hover,
+    so this is the only confirmation a tap registered.
+  - `.eq-bar` — the equaliser beside the live radio button. Animates *only*
+    while audio is actually playing; idle, disabled and error states render the
+    same bars at rest. Unequal durations (900–1400ms) so the bars never sync
+    into a single pulse, which would read as a heartbeat rather than audio.
+  A third piece of motion needs to clear the same bar: what state does it
+  report, and is that state otherwise invisible?
 - `prefers-reduced-motion` is honoured globally.
 
 ## Performance

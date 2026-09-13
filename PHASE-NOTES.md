@@ -214,5 +214,15 @@ knowingly rather than expecting traffic in month one.
   bucket to upload to yet.
 - PDF export is not built. CSV covers the renewal conversation; PDF can follow
   in Phase 6 if wanted.
-- `/magazine`, `/history`, `/podcast`, `/live`, `/search` and `/sections/*` are
+- `/magazine`, `/history`, `/podcast`, `/search` and `/sections/*` are
   `noindex` placeholders so the navigation does not 404 during demonstrations.
+- `/live` is **no longer a placeholder** — the radio player was pulled forward
+  out of Phase 5 and the page is now indexed. It is built complete and inert:
+  with `NEXT_PUBLIC_STREAM_URL` unset the button renders disabled and says
+  "Stream starting soon". **It is not a working radio until the AzuraCast VPS
+  exists** (≈US$6–12/month, client-managed). Setting the env var is the entire
+  launch — no code change.
+- The stream carries **no now-playing metadata**. The CSP allows the audio
+  itself (`media-src 'self' https:`) but not a `fetch()` to the stream host
+  (`connect-src 'self'`). Showing a track or show title later needs a
+  server-side proxy route, which keeps the CSP strict, rather than widening it.

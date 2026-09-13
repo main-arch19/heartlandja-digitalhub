@@ -51,6 +51,22 @@ function resolveSiteUrl(): string {
   return 'http://localhost:3000'
 }
 
+/**
+ * Resolves the live radio stream, or null when none is configured.
+ *
+ * Null is a real state, not a failure: the AzuraCast server is client-managed
+ * and does not exist yet, so the player renders disabled and says so rather
+ * than offering a button that cannot work.
+ *
+ * `firstNonEmpty` rather than `??` for the same reason `resolveSiteUrl` uses
+ * it — a hosting platform injects a declared-but-unset variable as `""`, which
+ * `??` does not catch. Here that would mean `<audio src="">`, which resolves
+ * against the page URL and makes the browser try to play the HTML document.
+ */
+function resolveStreamUrl(): string | null {
+  return firstNonEmpty(process.env.NEXT_PUBLIC_STREAM_URL) ?? null
+}
+
 export const SITE = {
   name: 'Heartland JA',
   shortName: 'Heartland',
@@ -65,6 +81,8 @@ export const SITE = {
    * `resolveSiteUrl` for why that guarantee matters.
    */
   url: resolveSiteUrl(),
+  /** The live radio stream, or null when no AzuraCast server is configured. */
+  streamUrl: resolveStreamUrl(),
   publisher: 'Heartland JA',
   builtBy: 'Quantum Era Solutions',
   social: {
