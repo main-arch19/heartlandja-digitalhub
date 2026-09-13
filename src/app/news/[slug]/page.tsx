@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { EditorialImage } from '@/components/editorial/editorial-image'
 import { RichText, richTextToPlainText } from '@/components/editorial/rich-text'
 import { RelatedListings } from '@/components/directory/listing-card'
 import { Breadcrumbs } from '@/components/layout/breadcrumbs'
@@ -107,6 +108,15 @@ export default async function NewsPostPage({ params }: PageProps) {
                 </>
               ) : null}
             </p>
+
+            <EditorialImage
+              src={post.hero_image_url}
+              alt={post.hero_image_alt}
+              ratio="3/2"
+              sizes="(min-width: 1024px) 48rem, 100vw"
+              priority
+              className="mt-6"
+            />
 
             <hr className="rule-gold my-7" />
 

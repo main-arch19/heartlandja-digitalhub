@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { OpenStatus } from '@/components/directory/open-status'
+import { BusinessMark } from '@/components/editorial/editorial-image'
 import { townSlug } from '@/lib/utils'
 import type { BusinessWithRelations } from '@/types/db'
 
@@ -27,8 +28,11 @@ export function ListingCard({
     <article
       className={
         isFeatured
-          ? 'relative rounded-sm border border-gold/50 bg-gold-wash/40 p-5 transition-colors hover:border-gold'
-          : 'relative rounded-sm border border-rule bg-paper-raised p-5 transition-colors hover:border-rule-strong'
+          ? // `bg-gold-wash` opaque, not `/40`: a translucent card lets the
+            // shadow beneath it show through the face, which reads as dirt
+            // rather than depth.
+            'card-lift relative rounded-sm border border-gold/50 bg-gold-wash p-5 hover:border-gold'
+          : 'card-lift relative rounded-sm border border-rule bg-paper-raised p-5 hover:border-rule-strong'
       }
     >
       {isFeatured ? (
@@ -37,23 +41,32 @@ export function ListingCard({
         </span>
       ) : null}
 
-      <h3 className="font-display text-lg font-semibold leading-snug">
-        {/* Stretched link: the whole card is the target, but only one link is
-            in the accessibility tree. */}
-        <Link href={href} className="after:absolute after:inset-0 hover:text-green">
-          {business.name}
-        </Link>
-      </h3>
+      <div className="flex items-start gap-3">
+        {/* The logo, or the business's initials when it has none. A directory
+            is a grid, and a missing mark leaves a hole where its neighbours
+            have one — this is the one place a fallback earns its keep. */}
+        <BusinessMark name={business.name} logoUrl={business.logo_url} />
 
-      <p className="mt-1 text-sm text-ink-faint">
-        {showCategory ? (
-          <>
-            {business.category.name}
-            <span aria-hidden="true"> · </span>
-          </>
-        ) : null}
-        {business.town}
-      </p>
+        <div className="min-w-0">
+          <h3 className="font-display text-lg font-semibold leading-snug">
+            {/* Stretched link: the whole card is the target, but only one link
+                is in the accessibility tree. */}
+            <Link href={href} className="after:absolute after:inset-0 hover:text-green">
+              {business.name}
+            </Link>
+          </h3>
+
+          <p className="mt-1 text-sm text-ink-faint">
+            {showCategory ? (
+              <>
+                {business.category.name}
+                <span aria-hidden="true"> · </span>
+              </>
+            ) : null}
+            {business.town}
+          </p>
+        </div>
+      </div>
 
       {/* Whether this business is trading right now — the single most useful
           thing on a card when someone is scanning twenty plumbers at 7pm.

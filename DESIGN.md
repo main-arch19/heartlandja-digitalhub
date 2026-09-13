@@ -88,6 +88,14 @@ trip is a visible delay.
 
 ### Scale
 
+- **Lead headline** (`.display-lead`): `2.125rem` mobile → `3rem` desktop,
+  `line-height: 1.08`, tracking `-0.022em` → `-0.028em`. The one decisively
+  largest thing on a page. Measured on a 390px phone the scale had collapsed —
+  a single 30px headline and then sixteen elements at 20px and nineteen at
+  16px — and a page where nothing is decisively largest has no focal point.
+  That flatness was most of what read as unfinished. The step is now 1.7×
+  over the row headlines beneath it. Tracking tightens as the size grows,
+  which is what stops large display serif looking loose.
 - Page headline: `1.875rem` mobile → `2.5rem` desktop, `line-height: 1.15`
 - Section headline: `1.5rem`
 - Standfirst: `1.1875rem`, display face, `--color-ink-muted`
@@ -112,6 +120,40 @@ These are what make the publication read as a publication:
 - **Prose** (`.prose-editorial`) — rendered rich text. Constrained measure, generous leading.
 
 Photography-forward: where an image exists it leads, and the chrome recedes.
+
+**Where no image exists, nothing renders.** No grey box, no placeholder frame,
+no icon in a dashed rectangle. An empty slot advertises an absence; no slot at
+all simply reads as a design that did not call for a picture there. That rule
+is enforced by `EditorialImage` in `src/components/editorial/editorial-image.tsx`,
+which returns `null` on a missing `src`.
+
+The single exception is a directory listing's mark. A directory is a grid, and
+a missing logo leaves a hole where its neighbours have one — so `BusinessMark`
+falls back to a monogram of the business's own initials in the display face. It
+invents no imagery.
+
+## Elevation
+
+Since the page ground and the card ground are both white, a card separates from
+the page by a 1px hairline alone, which reads as undressed rather than clean.
+`.card-lift` supplies the missing depth:
+
+| Token | Value |
+|---|---|
+| `--shadow-card` | `0 1px 2px rgb(20 32 26 / 0.04), 0 4px 12px rgb(20 32 26 / 0.03)` |
+| `--shadow-card-hover` | `0 1px 2px rgb(20 32 26 / 0.05), 0 8px 24px rgb(20 32 26 / 0.06)` |
+
+Deliberately weak — the shadow you notice only once it is gone. Tinted with the
+ink hue rather than pure black, because a neutral-black shadow over a warm
+design reads as grey smudge.
+
+- **Public card surfaces only** — listing cards, widgets, topic cards. Not admin
+  forms or panels: those are tools, and a tool that looks like a brochure is
+  harder to scan.
+- A card on a translucent ground must be made **opaque** first. A shadow beneath
+  a see-through card shows through its face and reads as dirt.
+- The hover state changes `box-shadow` only, never `transform`. These sit in
+  dense grids, and a scaling card nudges its neighbours' perceived alignment.
 
 ## Layout
 

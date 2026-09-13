@@ -28,7 +28,7 @@ export function CurrencyCard({ data }: { data: ExchangeRate | null }) {
       </div>
       <hr className="rule-gold mt-2 mb-4" />
 
-      <div className="rounded-sm border border-rule bg-paper-sunken p-4">
+      <div className="card-lift rounded-sm border border-rule bg-paper-sunken p-4">
         {data ? (
           <>
             <CurrencyInput rate={data.rate} />

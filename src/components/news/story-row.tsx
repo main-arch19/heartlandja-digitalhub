@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { EditorialImage } from '@/components/editorial/editorial-image'
 import { richTextToPlainText } from '@/components/editorial/rich-text'
 import { StoryEyebrow } from '@/components/news/eyebrow'
 import { formatDate, readingTimeFromText, townSlug } from '@/lib/utils'
@@ -56,10 +57,23 @@ export function StoryLead({
 }) {
   return (
     <article className="relative pb-8">
+      {/* The hero leads when one exists, and the block simply starts at the
+          eyebrow when it does not — no empty frame. This is the only story on
+          an index that gets an image; if everything carries one, nothing
+          leads. */}
+      <EditorialImage
+        src={post.hero_image_url}
+        alt={post.hero_image_alt}
+        ratio="3/2"
+        sizes="(min-width: 1024px) 48rem, 100vw"
+        priority
+        className="mb-5"
+      />
+
       {/* Not linked: the whole card is already one stretched-link tap target. */}
       <StoryEyebrow post={post} topics={topics} excludeTopicId={excludeTopicId} />
 
-      <h2 className="mt-2 font-display text-3xl font-semibold leading-tight sm:text-[2.25rem]">
+      <h2 className="display-lead mt-2 font-display font-semibold">
         <Link
           href={`/news/${post.slug}`}
           className="after:absolute after:inset-0 hover:text-green"

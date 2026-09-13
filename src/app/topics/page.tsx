@@ -103,7 +103,7 @@ function TopicCard({ entry }: { entry: TopicWithCount }) {
   const { topic, count } = entry
 
   return (
-    <li className="relative rounded-sm border border-rule bg-paper-raised p-4">
+    <li className="card-lift relative rounded-sm border border-rule bg-paper-raised p-4">
       <h3 className="font-display text-lg font-semibold leading-snug">
         <Link
           href={`/topics/${topic.slug}`}

@@ -74,6 +74,20 @@
   /* --- Editorial measure --- */
   --measure: 68ch;
   --measure-narrow: 54ch;
+
+  /* --- Elevation ---
+     Since the recolour the page ground and the card ground are both white, so
+     a card separates from the page by a 1px hairline alone. That reads as
+     undressed rather than clean.
+
+     These are deliberately weak — the shadow you notice only once it is gone.
+     Tinted with the ink hue rather than pure black, because a neutral-black
+     shadow over a warm-tinted design reads as grey smudge. Two layers: a tight
+     contact shadow that gives the edge, and a wide soft one that gives the
+     lift. */
+  --shadow-card: 0 1px 2px rgb(20 32 26 / 0.04), 0 4px 12px rgb(20 32 26 / 0.03);
+  --shadow-card-hover: 0 1px 2px rgb(20 32 26 / 0.05),
+    0 8px 24px rgb(20 32 26 / 0.06);
 }
 
 :root {
@@ -422,5 +436,56 @@
 
   .open-pulse {
     animation: open-pulse 2000ms ease-in-out infinite;
+  }
+
+  /*
+   * Card elevation.
+   *
+   * Applied to PUBLIC card surfaces only — listing cards, widgets, topic
+   * cards. Deliberately not to admin forms and panels: those are tools, and a
+   * tool that looks like a brochure is harder to scan quickly.
+   *
+   * In the utilities layer for the same cascade reason as `.pressable`: cards
+   * already carry Tailwind border and colour utilities, and from the
+   * components layer the transition here would lose to them.
+   *
+   * The hover lift is transform-free — `box-shadow` only — because these cards
+   * sit in dense grids and a scaling card nudges its neighbours' perceived
+   * alignment. The shadow alone reads as "this one is under the cursor".
+   */
+  .card-lift {
+    box-shadow: var(--shadow-card);
+    transition-property: box-shadow, border-color;
+    transition-duration: 180ms;
+    transition-timing-function: ease-out;
+  }
+
+  .card-lift:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /*
+   * The lead headline.
+   *
+   * Measured on a 390px phone the type scale had collapsed: one 30px headline
+   * and then everything else between 15px and 20px, sixteen elements deep. A
+   * page where nothing is decisively largest has no focal point, and that
+   * flatness is most of what reads as unfinished.
+   *
+   * This restores a real step at the top — roughly 1.6x the row headlines
+   * beneath it rather than 1.5x — and tightens tracking as the size grows,
+   * which is what stops large display serif looking loose.
+   */
+  .display-lead {
+    font-size: 2.125rem;
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+  }
+
+  @media (min-width: 640px) {
+    .display-lead {
+      font-size: 3rem;
+      letter-spacing: -0.028em;
+    }
   }
 }
